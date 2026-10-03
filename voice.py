@@ -35,7 +35,10 @@ class Voice:
         """Load Whisper onto the GPU (downloads the model on first use) and measure room noise."""
         import torch
         from transformers import pipeline
+        from transformers.utils import logging as hf_logging
 
+        hf_logging.set_verbosity_error()  # keep the chat free of loader warnings and progress bars
+        hf_logging.disable_progress_bar()
         cuda = torch.cuda.is_available()
         self.asr = pipeline(
             "automatic-speech-recognition",

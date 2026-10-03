@@ -7,6 +7,7 @@ import asyncio
 import json
 import sys
 import threading
+from pathlib import Path
 
 from claude_agent_sdk import ClaudeSDKError, CLINotFoundError
 
@@ -86,7 +87,7 @@ async def amain():
             return
         from .voice import Voice
 
-        print("🎙 Loading speech recognition (the first time downloads the Whisper model, ~1.6 GB)...", flush=True)
+        print(f"🎙 Loading speech recognition ({Path(config.STT_MODEL).name})...", flush=True)
         v = Voice()
         try:
             await asyncio.to_thread(v.load)

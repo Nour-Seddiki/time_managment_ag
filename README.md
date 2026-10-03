@@ -99,9 +99,11 @@ When a session ends, Focus speaks the check-in and opens the mic for your answer
 conversation going for as long as it's asking you questions. Press **Enter** to talk at any
 other time, and type `/voice off` to go back to text. Typing always works too.
 
-- **Listening:** OpenAI Whisper (`whisper-large-v3-turbo`) runs locally on your GPU, so your audio
-  never leaves the machine. It handles English and French, and you can mix them. The first launch
-  downloads the model (~1.6 GB).
+- **Listening:** OpenAI Whisper runs locally on your GPU, so your audio never leaves the machine.
+  It handles English and French. Focus uses the best model it finds in `data/models/`, trying
+  `whisper-large-v3-turbo` (~1.6 GB, most accurate), then `whisper-small`, then `whisper-base`
+  (~290 MB). If none is there, it downloads `openai/whisper-base`. To add a model, put its files from
+  `huggingface.co/openai/<name>` into `data/models/<name>/`.
 - **Speaking:** Microsoft's multilingual neural voice through `edge-tts`. This voice is online, so
   the text of Focus's replies is sent to Microsoft's speech service. If that fails, Focus falls
   back to the offline Windows voice.
@@ -110,7 +112,7 @@ other time, and type `/voice off` to go back to text. Typing always works too.
 
 | Variable | Default | |
 |---|---|---|
-| `FOCUS_STT_MODEL` | `openai/whisper-large-v3-turbo` | `openai/whisper-small` is smaller and faster but less accurate |
+| `FOCUS_STT_MODEL` | best model in `data/models/` | a hub id or a local folder path |
 | `FOCUS_TTS_VOICE` | `en-US-EmmaMultilingualNeural` | any `edge-tts --list-voices` name, e.g. `fr-FR-DeniseNeural` |
 | `FOCUS_TTS_RATE` | `+5%` | speaking speed |
 
