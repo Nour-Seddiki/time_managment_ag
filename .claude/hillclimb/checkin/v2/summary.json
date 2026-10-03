@@ -1,0 +1,38 @@
+{
+  "description": "Treat the student's choice as the go-ahead: start the timer in the same reply instead of re-confirming",
+  "checkin_ok": {
+    "all": {
+      "score": 0.8289473684210527,
+      "ci": 0.11972714642185074,
+      "n": 38
+    },
+    "train": {
+      "score": 0.8095238095238095,
+      "ci": 0.16795061002392161,
+      "n": 21
+    },
+    "test": {
+      "score": 0.8529411764705882,
+      "ci": 0.16835913848526343,
+      "n": 17
+    }
+  },
+  "metrics": {
+    "checkin_ok": 0.8289473684210527,
+    "no_early_timer": 1.0,
+    "acts_on_choice": 1.0,
+    "reflection": 1.0,
+    "task_status": 0.9868421052631579,
+    "no_cal_writes": 1.0,
+    "concise": 1.0,
+    "check_in_q": 0.9868421052631579,
+    "next_step": 0.9605263157894737,
+    "context_fit": 0.8947368421052632,
+    "tone": 0.9868421052631579
+  },
+  "latency_s": 9.35,
+  "tool_calls": 1.72,
+  "words_per_reply": 24.4,
+  "rows": 76,
+  "unscored": 0
+}

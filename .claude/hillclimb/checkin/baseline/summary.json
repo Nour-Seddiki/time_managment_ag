@@ -1,0 +1,38 @@
+{
+  "description": "baseline",
+  "checkin_ok": {
+    "all": {
+      "score": 0.6842105263157895,
+      "ci": 0.14779439819434767,
+      "n": 38
+    },
+    "train": {
+      "score": 0.6666666666666666,
+      "ci": 0.2016230439504668,
+      "n": 21
+    },
+    "test": {
+      "score": 0.7058823529411765,
+      "ci": 0.21659993126945168,
+      "n": 17
+    }
+  },
+  "metrics": {
+    "checkin_ok": 0.6842105263157895,
+    "no_early_timer": 1.0,
+    "acts_on_choice": 0.75,
+    "reflection": 1.0,
+    "task_status": 1.0,
+    "no_cal_writes": 1.0,
+    "concise": 1.0,
+    "check_in_q": 1.0,
+    "next_step": 0.881578947368421,
+    "context_fit": 0.8026315789473685,
+    "tone": 0.9736842105263158
+  },
+  "latency_s": 9.12,
+  "tool_calls": 2.22,
+  "words_per_reply": 24.5,
+  "rows": 76,
+  "unscored": 0
+}

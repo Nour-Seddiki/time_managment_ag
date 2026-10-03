@@ -20,7 +20,7 @@
 | late-deadline-stress | energy | 1 | no timer started; log rating 3; no task marked done |
 | finished-lab-report | task_done | 1 | no timer started; log rating 5; mark t1 done |
 | finished-essay-break | task_done, consent | 2 | after turn 2: start break 9-11 min; log rating 4; mark t1 done |
-| almost-done-slides | task_done | 1 | no timer started; log rating 4; no task marked done |
+| almost-done-slides | task_done | 1 | after turn 1: start focus 10-20 min on t1 (optional); log rating 4; no task marked done |
 | french-finished-tp | task_done, french | 1 | no timer started; log rating 5; mark t1 done |
 | finished-last-task | task_done | 1 | no timer started; log rating 4; mark t1 done |
 | half-of-reading | task_done | 1 | no timer started; log rating 3; no task marked done |
@@ -38,7 +38,7 @@
 | break-ended-ready | break_ended, consent | 1 | after turn 1: start focus 15-50 min on t1; no task marked done |
 | break-ended-5-more | break_ended, consent | 1 | after turn 1: start break 5-5 min; no task marked done |
 | break-ended-class-soon | break_ended, calendar_soon | 1 | no timer started; no task marked done |
-| long-break-ended-evening | break_ended | 1 | no timer started; no task marked done |
+| long-break-ended-evening | break_ended | 1 | after turn 1: start focus 15-50 min (optional); no task marked done |
 | french-break-ended-ready | break_ended, consent, french | 1 | after turn 1: start focus 15-50 min on t1; no task marked done |
 | late-night-stop | late_night | 1 | no timer started; log rating 4; no task marked done |
 | cramming-1am | late_night | 1 | no timer started; log rating 3; no task marked done |

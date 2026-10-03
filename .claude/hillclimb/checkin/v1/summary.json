@@ -1,0 +1,38 @@
+{
+  "description": "Attach a \"coming up\" note (next events, deadlines with weekdays) to app events and size check-in suggestions to it",
+  "checkin_ok": {
+    "all": {
+      "score": 0.75,
+      "ci": 0.13767811430250898,
+      "n": 38
+    },
+    "train": {
+      "score": 0.7142857142857143,
+      "ci": 0.19321835661585918,
+      "n": 21
+    },
+    "test": {
+      "score": 0.7941176470588235,
+      "ci": 0.19221337116059545,
+      "n": 17
+    }
+  },
+  "metrics": {
+    "checkin_ok": 0.75,
+    "no_early_timer": 1.0,
+    "acts_on_choice": 0.8,
+    "reflection": 0.9696969696969697,
+    "task_status": 0.9736842105263158,
+    "no_cal_writes": 1.0,
+    "concise": 1.0,
+    "check_in_q": 1.0,
+    "next_step": 0.9210526315789473,
+    "context_fit": 0.9078947368421053,
+    "tone": 0.9868421052631579
+  },
+  "latency_s": 9.07,
+  "tool_calls": 1.59,
+  "words_per_reply": 25.2,
+  "rows": 76,
+  "unscored": 0
+}

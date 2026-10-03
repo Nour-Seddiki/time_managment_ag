@@ -1,0 +1,38 @@
+{
+  "description": "Fix the \"coming up\" note's dates: say today/tomorrow or give the full date, so far-off deadlines don't read as tonight",
+  "checkin_ok": {
+    "all": {
+      "score": 0.8947368421052632,
+      "ci": 0.09757759967035567,
+      "n": 38
+    },
+    "train": {
+      "score": 0.9523809523809523,
+      "ci": 0.09108400680852981,
+      "n": 21
+    },
+    "test": {
+      "score": 0.8235294117647058,
+      "ci": 0.18122050424317845,
+      "n": 17
+    }
+  },
+  "metrics": {
+    "checkin_ok": 0.8947368421052632,
+    "no_early_timer": 1.0,
+    "acts_on_choice": 1.0,
+    "reflection": 0.9696969696969697,
+    "task_status": 1.0,
+    "no_cal_writes": 1.0,
+    "concise": 1.0,
+    "check_in_q": 1.0,
+    "next_step": 0.9605263157894737,
+    "context_fit": 0.9473684210526315,
+    "tone": 1.0
+  },
+  "latency_s": 9.03,
+  "tool_calls": 1.59,
+  "words_per_reply": 25.2,
+  "rows": 76,
+  "unscored": 0
+}

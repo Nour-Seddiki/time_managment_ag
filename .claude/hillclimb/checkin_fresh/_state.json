@@ -1,0 +1,104 @@
+{
+  "metrics": [
+    {
+      "id": "checkin_ok",
+      "label": "check-in ok",
+      "kind": "binary"
+    },
+    {
+      "id": "no_early_timer",
+      "label": "no early timer",
+      "kind": "binary"
+    },
+    {
+      "id": "acts_on_choice",
+      "label": "acts on choice",
+      "kind": "binary"
+    },
+    {
+      "id": "reflection",
+      "label": "logs rating",
+      "kind": "binary"
+    },
+    {
+      "id": "task_status",
+      "label": "task status",
+      "kind": "binary"
+    },
+    {
+      "id": "no_cal_writes",
+      "label": "calendar safe",
+      "kind": "binary"
+    },
+    {
+      "id": "concise",
+      "label": "concise",
+      "kind": "binary"
+    },
+    {
+      "id": "check_in_q",
+      "label": "asks how",
+      "kind": "binary"
+    },
+    {
+      "id": "next_step",
+      "label": "next step",
+      "kind": "binary"
+    },
+    {
+      "id": "context_fit",
+      "label": "context fit",
+      "kind": "binary"
+    },
+    {
+      "id": "tone",
+      "label": "tone",
+      "kind": "binary"
+    }
+  ],
+  "perf_fields": [
+    {
+      "id": "latency_s",
+      "label": "latency",
+      "unit": "s"
+    },
+    {
+      "id": "tool_calls",
+      "label": "tool calls"
+    },
+    {
+      "id": "words_per_reply",
+      "label": "words/reply"
+    }
+  ],
+  "flow": "checkin_fresh",
+  "description": "Confirmation set: 20 new check-in scenarios written after the tuning rounds; never read during tuning. baseline = original Focus, v3 = tuned Focus.",
+  "harness_paths": [
+    "evals/checkin.py",
+    "evals/checkin_cases_fresh.json"
+  ],
+  "train_ids": [],
+  "test_ids": [
+    "f-30-more-before-lab",
+    "f-after-long-break-short",
+    "f-anxious",
+    "f-break-ended-meeting-soon",
+    "f-break-ended-resume-fr",
+    "f-call-in-30-continue",
+    "f-enough-for-today",
+    "f-finished-article",
+    "f-finished-summary-break",
+    "f-fourth-session-break",
+    "f-fourth-session-plain",
+    "f-free-day-stats-40",
+    "f-midterm-in-2h",
+    "f-near-midnight",
+    "f-on-fire-50-more",
+    "f-problems-1-to-6",
+    "f-sleepy-after-lunch",
+    "f-switch-accounting-25",
+    "f-train-in-20",
+    "f-tutorial-in-8"
+  ],
+  "reps": 2
+}

@@ -108,8 +108,7 @@ TOOLS = [
     _tool(
         "start_session",
         "Start a focus or break timer. When it runs out you'll receive an [EVENT] message and should "
-        "check in with the student. Call it as soon as the student picks a next step (their choice is "
-        "the agreement, so don't ask them to confirm again); never start one they haven't chosen.",
+        "check in with the student. Only start once the student has agreed.",
         {
             "kind": {"type": "string", "enum": ["focus", "break"]},
             "minutes": {"type": "integer", "description": f"Default {config.DEFAULT_FOCUS_MINUTES} for focus."},
@@ -173,40 +172,6 @@ class ToolBox:
             return f"{type(e).__name__}: {e}", True
         except Exception as e:  # Google HttpError, network, etc.
             return f"{type(e).__name__}: {e}", True
-
-    def schedule_context(self) -> str:
-        """What's coming up, attached to app events so check-ins are sized around real time limits."""
-        now = timeutil.now()
-        lines = [f"Coming up (now {now:%a %H:%M}):"]
-
-        def when(dt):
-            mins = int((dt - now).total_seconds() // 60)
-            days = (dt.date() - now.date()).days
-            if mins < 0:
-                return "now"
-            if mins < 120:
-                return f"{dt:%H:%M}, in {mins} min"
-            if days == 0:
-                return f"today {dt:%H:%M}, in {mins // 60}h{mins % 60:02d}"
-            if days == 1:
-                return f"tomorrow {dt:%a %H:%M}, in {mins // 60}h{mins % 60:02d}"
-            return f"{dt:%a %d %b %H:%M}, in {days} days"  # explicit date: "Mon" alone reads as today
-
-        try:
-            events = [e for e in self.calendar.list_events(now, now + timedelta(hours=18))
-                      if not e["all_day"] and not e["declined"]]
-            for e in events[:3]:
-                start, end = timeutil.parse(e["start"]), timeutil.parse(e["end"])
-                status = f"until {end:%H:%M}" if start <= now else when(start)
-                lines.append(f"- {e['title']} ({status})")
-            if not events:
-                lines.append("- Calendar: nothing in the next 18 hours")
-        except CalendarNotConnected:
-            lines.append("- Calendar: not connected")
-        due = [t for t in self.store.list_tasks("open") if t["due"]][:3]
-        for t in due:
-            lines.append(f"- Due: {t['title']} ({when(timeutil.parse(t['due']))})")
-        return "\n".join(lines)
 
     # ---- calendar ----
 

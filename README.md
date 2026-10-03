@@ -141,10 +141,18 @@ python -m focus_agent.evals.checkin --reps 2     # full run (resumes where it st
 python -m focus_agent.evals.checkin --variant v1 --reps 2   # after editing the prompt
 ```
 
-**Baseline (Claude Sonnet 5, 38 cases × 2 reps): 68% ± 15% of check-ins pass every check.** The
-weak spots are upcoming calendar events (8%), because Focus rarely checks the calendar before
-suggesting the next block, and re-asking after the student has already chosen. Results are in
-`.claude/hillclimb/checkin/summary_baseline.md`. If the runner, cases or grader change, it refuses
+**Baseline (Claude Sonnet 5, 38 cases × 2 reps): 68% of check-ins pass every check.** The weak
+spots were upcoming calendar events (8%) and re-asking after the student had already chosen. Three
+tuning rounds, each kept, are recorded in `.claude/hillclimb/checkin/` (`narrative.md`, `v1/` to `v3/`):
+
+1. A "coming up" note with the next events and deadlines is attached to every app event.
+2. The student's choice counts as the go-ahead, so Focus starts the timer instead of re-asking.
+3. Deadline dates in the note are unambiguous ("tomorrow Tue 09:00", "Mon 12 Oct, in 7 days").
+
+The result: held-out test went from 71% to 82%, but +12 ± 27 points isn't significant with 17 test
+cases. Train went from 67% to 95%. Acting on the student's choice went from 75% to 100% and context
+fit from 80% to 95%, and Focus still never starts a timer early or changes the calendar on its own.
+A confirmation on 20 fresh cases (`checkin_fresh`) is in progress. If the runner, cases or grader change, it refuses
 to run until you review them and pass `--approve-harness` once.
 
 ## Configuration (environment variables)

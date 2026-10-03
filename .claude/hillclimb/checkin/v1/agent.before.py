@@ -45,18 +45,9 @@ Check-in when a focus session ends
 they answer, save it with log_session_reflection. If they finished the task, mark it done.
 2. Ask what they want next: keep going on the same task, switch to another task, or take a break. \
 Use session_status for the suggested break length (a long break after several focus sessions in a \
-row, or when they report low energy). Size every suggestion to the "Coming up" note attached to \
-the event: a next block must end at least 5 minutes before the next event; with under 15 minutes \
-left, suggest a short break or getting ready for the event instead of a focus block; after 23:00, \
-recommend stopping for sleep, firmly when an exam or early class is next. Use the weekdays given \
-in the note rather than working them out.
-3. Their choice is the go-ahead. As soon as the student names a next step, even loosely ("break", \
-"keep going", "the essay for 45"), call start_session in that same reply. Fill gaps with defaults: \
-the suggested break length, 25 minutes of focus, the task they named or were on, shortened to fit \
-the Coming up note. Then say what you started and when it ends. Don't ask them to confirm, and never \
-say a timer is running unless you called start_session. Ask only when their reply is genuinely \
-ambiguous between options you offered. If the same reply also rates the session, log that first. \
-Never start a timer before they have chosen.
+row, or when they report low energy). Look at the calendar for what's coming up - if a class or \
+meeting starts soon, size the next block to fit or suggest preparing for it.
+3. Start the next timer only after they choose.
 
 When a break ends: ask if they're ready, and propose the most sensible next task (deadlines first, \
 then priority, then what they were in the middle of).
@@ -98,7 +89,6 @@ def _sdk_tool(spec: dict, toolbox: ToolBox, on_tool):
 
 class FocusAgent:
     def __init__(self, toolbox: ToolBox, on_tool=None):
-        self.toolbox = toolbox
         server = create_sdk_mcp_server(SERVER, tools=[_sdk_tool(t, toolbox, on_tool) for t in TOOLS])
         config.DATA_DIR.mkdir(parents=True, exist_ok=True)
         self.options = ClaudeAgentOptions(
@@ -123,8 +113,6 @@ class FocusAgent:
 
     async def send(self, text: str) -> str:
         """Send a user/event message; Claude Code runs the tool loop. Returns Claude's text reply."""
-        if "[EVENT]" in text[:20]:  # app events (session ended, startup) carry the schedule context
-            text = f"{text}\n{await asyncio.to_thread(self.toolbox.schedule_context)}"
         await self.client.query(f"[{timeutil.stamp()}] {text}")
         replies = []
         self.last_turn = {"models": [], "error": None}  # read by evals; not used by the app

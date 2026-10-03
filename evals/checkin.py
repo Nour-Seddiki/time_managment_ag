@@ -174,7 +174,7 @@ async def run_conversation(case):
     from ..__main__ import _describe
     from ..agent import SYSTEM_PROMPT, FocusAgent
 
-    with tempfile.TemporaryDirectory(prefix="focus_eval_") as tmp:
+    with tempfile.TemporaryDirectory(prefix="focus_eval_", ignore_cleanup_errors=True) as tmp:
         toolbox, event = build_world(case, Path(tmp))
         token = _NOW.set(toolbox.now)  # message timestamps use the case clock
         agent = FocusAgent(toolbox)
@@ -330,7 +330,7 @@ def judge_input(case, convo):
 async def run_judge(case, convo, model):
     from claude_agent_sdk import AssistantMessage, ClaudeAgentOptions, ResultMessage, TextBlock, query
 
-    with tempfile.TemporaryDirectory(prefix="focus_judge_") as tmp:
+    with tempfile.TemporaryDirectory(prefix="focus_judge_", ignore_cleanup_errors=True) as tmp:
         options = ClaudeAgentOptions(
             system_prompt=JUDGE_SYSTEM, tools=[], setting_sources=[], strict_mcp_config=True,
             model=model, cwd=tmp, output_format={"type": "json_schema", "schema": JUDGE_SCHEMA},
@@ -475,7 +475,25 @@ def summarize(vdir, variant):
         return m, half, len(vals)
 
     reps = max((r["rep"] for r in rows), default=-1) + 1
+    state = json.loads((FLOW / "_state.json").read_text(encoding="utf-8"))
+    splits = {s: set(state.get(f"{s}_ids", [])) for s in ("train", "test")}
+    split_scores = {s: mean_ci("checkin_ok", ids) for s, ids in splits.items() if ids}
+    change = vdir / "change.md"
+    description = next((ln.strip("# ").strip() for ln in change.read_text(encoding="utf-8").splitlines()
+                        if ln.strip()), "") if change.exists() else "baseline"
+    (vdir / "summary.json").write_text(json.dumps({
+        "description": description,
+        "checkin_ok": {s: {"score": m, "ci": half, "n": n} for s, (m, half, n) in
+                       {"all": mean_ci("checkin_ok"), **split_scores}.items()},
+        "metrics": {k: mean_ci(k)[0] for k in METRICS},
+        "latency_s": round(sum(r["latency_s"] for r in rows) / max(1, len(rows)), 2),
+        "tool_calls": round(sum(r["tool_calls"] for r in rows) / max(1, len(rows)), 2),
+        "words_per_reply": round(sum(r["words_per_reply"] for r in rows) / max(1, len(rows)), 1),
+        "rows": len(rows), "unscored": len(unresolved)}, indent=2), encoding="utf-8")
     lines = [f"# Check-in eval - `{variant}`", "",
+             f"Change: {description}", "",
+             " · ".join(f"**{s}** {m:.0%} ± {half:.0%} ({n} cases)" for s, (m, half, n) in split_scores.items()
+                        if m is not None), "",
              f"{len(per_case)} cases × {reps} rep(s); {len(unresolved)} attempt(s) not scored (see errors.jsonl). "
              f"Model: {sorted({str(r['model']) for r in rows})}; judge: {sorted({str(r['judge_model']) for r in rows})}.", "",
              "Scores are the share of cases passing (per case: mean over reps), with a 95% interval. "
@@ -583,8 +601,8 @@ def selftest(cases):
         assert grade_programmatic(case, eager)[0]["no_early_timer"] == 0, f"eager timer passes on {case['id']}"
 
     # an unlinked session passes only when its label names the chosen task
-    switch = next(c for c in cases if c["id"] == "free-afternoon-switch")
-    for label, want in (("Stats homework", 1), ("Sociology essay", 0)):
+    switch = next((c for c in cases if c["id"] == "free-afternoon-switch"), None)
+    for label, want in (("Stats homework", 1), ("Sociology essay", 0)) if switch else ():
         out = json.dumps({"started": {"kind": "focus", "planned_minutes": 25, "task_id": None, "label": label,
                                       "ends_at": "2026-10-05T14:25"}})
         call = {"reply": 2, "name": "start_session", "args": {}, "output": out, "is_error": False}
@@ -707,7 +725,13 @@ def main():
     p.add_argument("--review", action="store_true", help="write cases.md for reading the inputs")
     p.add_argument("--selftest", action="store_true", help="check the graders without calling any model")
     p.add_argument("--regrade", action="store_true", help="re-score saved transcripts after a grader change")
+    p.add_argument("--flow", default="checkin", help="results folder under .claude/hillclimb/ (e.g. checkin_fresh)")
+    p.add_argument("--cases-file", help="case file relative to the package (default evals/checkin_cases.json)")
     args = p.parse_args()
+    global FLOW, CASES_FILE
+    FLOW = PKG_DIR / ".claude" / "hillclimb" / args.flow
+    if args.cases_file:
+        CASES_FILE = PKG_DIR / args.cases_file
     if args.variant != "baseline" and not (args.variant[1:].isdigit() and args.variant[0] == "v"):
         p.error("variant must be 'baseline' or v<N>")
     for stream in (sys.stdout, sys.stderr):

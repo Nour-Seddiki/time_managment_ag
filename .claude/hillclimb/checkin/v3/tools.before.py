@@ -181,16 +181,11 @@ class ToolBox:
 
         def when(dt):
             mins = int((dt - now).total_seconds() // 60)
-            days = (dt.date() - now.date()).days
             if mins < 0:
                 return "now"
-            if mins < 120:
-                return f"{dt:%H:%M}, in {mins} min"
-            if days == 0:
-                return f"today {dt:%H:%M}, in {mins // 60}h{mins % 60:02d}"
-            if days == 1:
-                return f"tomorrow {dt:%a %H:%M}, in {mins // 60}h{mins % 60:02d}"
-            return f"{dt:%a %d %b %H:%M}, in {days} days"  # explicit date: "Mon" alone reads as today
+            if dt.date() != now.date():
+                return f"{dt:%a %H:%M}"
+            return f"{dt:%H:%M}, in {mins} min" if mins < 120 else f"{dt:%H:%M}, in {mins // 60}h{mins % 60:02d}"
 
         try:
             events = [e for e in self.calendar.list_events(now, now + timedelta(hours=18))

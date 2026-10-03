@@ -1,0 +1,29 @@
+--- a/agent.py
++++ b/agent.py
+@@ -50,7 +50,13 @@
+ left, suggest a short break or getting ready for the event instead of a focus block; after 23:00, \
+ recommend stopping for sleep, firmly when an exam or early class is next. Use the weekdays given \
+ in the note rather than working them out.
+-3. Start the next timer only after they choose.
++3. Their choice is the go-ahead. As soon as the student names a next step, even loosely ("break", \
++"keep going", "the essay for 45"), call start_session in that same reply. Fill gaps with defaults: \
++the suggested break length, 25 minutes of focus, the task they named or were on, shortened to fit \
++the Coming up note. Then say what you started and when it ends. Don't ask them to confirm, and never \
++say a timer is running unless you called start_session. Ask only when their reply is genuinely \
++ambiguous between options you offered. If the same reply also rates the session, log that first. \
++Never start a timer before they have chosen.
+ 
+ When a break ends: ask if they're ready, and propose the most sensible next task (deadlines first, \
+ then priority, then what they were in the middle of).
+--- a/tools.py
++++ b/tools.py
+@@ -108,7 +108,8 @@
+     _tool(
+         "start_session",
+         "Start a focus or break timer. When it runs out you'll receive an [EVENT] message and should "
+-        "check in with the student. Only start once the student has agreed.",
++        "check in with the student. Call it as soon as the student picks a next step (their choice is "
++        "the agreement, so don't ask them to confirm again); never start one they haven't chosen.",
+         {
+             "kind": {"type": "string", "enum": ["focus", "break"]},
+             "minutes": {"type": "integer", "description": f"Default {config.DEFAULT_FOCUS_MINUTES} for focus."},

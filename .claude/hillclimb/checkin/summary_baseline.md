@@ -1,5 +1,9 @@
 # Check-in eval - `baseline`
 
+Change: baseline
+
+**train** 67% ± 20% (21 cases) · **test** 71% ± 22% (17 cases)
+
 38 cases × 2 rep(s); 0 attempt(s) not scored (see errors.jsonl). Model: ['claude-sonnet-5']; judge: ["['claude-sonnet-5-5']"].
 
 Scores are the share of cases passing (per case: mean over reps), with a 95% interval. n/a cases are left out of that metric.
@@ -8,7 +12,7 @@ Scores are the share of cases passing (per case: mean over reps), with a 95% int
 |---|---|---|---|
 | **checkin_ok** | 68% | ±15% | 38 |
 | no_early_timer | 100% | ±0% | 38 |
-| acts_on_choice | 72% | ±21% | 18 |
+| acts_on_choice | 75% | ±19% | 20 |
 | reflection | 100% | ±0% | 33 |
 | task_status | 100% | ±0% | 38 |
 | no_cal_writes | 100% | ±0% | 38 |

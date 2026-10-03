@@ -1,0 +1,75 @@
+diff --git a/agent.py b/agent.py
+index f198982..a1919c5 100644
+--- a/agent.py
++++ b/agent.py
+@@ -45,8 +45,11 @@ Check-in when a focus session ends
+ they answer, save it with log_session_reflection. If they finished the task, mark it done.
+ 2. Ask what they want next: keep going on the same task, switch to another task, or take a break. \
+ Use session_status for the suggested break length (a long break after several focus sessions in a \
+-row, or when they report low energy). Look at the calendar for what's coming up - if a class or \
+-meeting starts soon, size the next block to fit or suggest preparing for it.
++row, or when they report low energy). Size every suggestion to the "Coming up" note attached to \
++the event: a next block must end at least 5 minutes before the next event; with under 15 minutes \
++left, suggest a short break or getting ready for the event instead of a focus block; after 23:00, \
++recommend stopping for sleep, firmly when an exam or early class is next. Use the weekdays given \
++in the note rather than working them out.
+ 3. Start the next timer only after they choose.
+ 
+ When a break ends: ask if they're ready, and propose the most sensible next task (deadlines first, \
+@@ -89,6 +92,7 @@ def _sdk_tool(spec: dict, toolbox: ToolBox, on_tool):
+ 
+ class FocusAgent:
+     def __init__(self, toolbox: ToolBox, on_tool=None):
++        self.toolbox = toolbox
+         server = create_sdk_mcp_server(SERVER, tools=[_sdk_tool(t, toolbox, on_tool) for t in TOOLS])
+         config.DATA_DIR.mkdir(parents=True, exist_ok=True)
+         self.options = ClaudeAgentOptions(
+@@ -113,6 +117,8 @@ class FocusAgent:
+ 
+     async def send(self, text: str) -> str:
+         """Send a user/event message; Claude Code runs the tool loop. Returns Claude's text reply."""
++        if "[EVENT]" in text[:20]:  # app events (session ended, startup) carry the schedule context
++            text = f"{text}\n{await asyncio.to_thread(self.toolbox.schedule_context)}"
+         await self.client.query(f"[{timeutil.stamp()}] {text}")
+         replies = []
+         self.last_turn = {"models": [], "error": None}  # read by evals; not used by the app
+diff --git a/tools.py b/tools.py
+index 492e346..c09410b 100644
+--- a/tools.py
++++ b/tools.py
+@@ -173,6 +173,35 @@ class ToolBox:
+         except Exception as e:  # Google HttpError, network, etc.
+             return f"{type(e).__name__}: {e}", True
+ 
++    def schedule_context(self) -> str:
++        """What's coming up, attached to app events so check-ins are sized around real time limits."""
++        now = timeutil.now()
++        lines = [f"Coming up (now {now:%a %H:%M}):"]
++
++        def when(dt):
++            mins = int((dt - now).total_seconds() // 60)
++            if mins < 0:
++                return "now"
++            if dt.date() != now.date():
++                return f"{dt:%a %H:%M}"
++            return f"{dt:%H:%M}, in {mins} min" if mins < 120 else f"{dt:%H:%M}, in {mins // 60}h{mins % 60:02d}"
++
++        try:
++            events = [e for e in self.calendar.list_events(now, now + timedelta(hours=18))
++                      if not e["all_day"] and not e["declined"]]
++            for e in events[:3]:
++                start, end = timeutil.parse(e["start"]), timeutil.parse(e["end"])
++                status = f"until {end:%H:%M}" if start <= now else when(start)
++                lines.append(f"- {e['title']} ({status})")
++            if not events:
++                lines.append("- Calendar: nothing in the next 18 hours")
++        except CalendarNotConnected:
++            lines.append("- Calendar: not connected")
++        due = [t for t in self.store.list_tasks("open") if t["due"]][:3]
++        for t in due:
++            lines.append(f"- Due: {t['title']} ({when(timeutil.parse(t['due']))})")
++        return "\n".join(lines)
++
+     # ---- calendar ----
+ 
+     def _list_calendar_events(self, start, end, query=None):

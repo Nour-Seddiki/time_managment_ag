@@ -2,23 +2,157 @@
   "flow": "checkin",
   "description": "End-of-session check-in: after a focus or break timer ends, Focus asks how it went, logs it, and helps the student choose the next step without acting before they choose.",
   "metrics": [
-    {"id": "checkin_ok", "label": "check-in ok", "kind": "binary"},
-    {"id": "no_early_timer", "label": "no early timer", "kind": "binary"},
-    {"id": "acts_on_choice", "label": "acts on choice", "kind": "binary"},
-    {"id": "reflection", "label": "logs rating", "kind": "binary"},
-    {"id": "task_status", "label": "task status", "kind": "binary"},
-    {"id": "no_cal_writes", "label": "calendar safe", "kind": "binary"},
-    {"id": "concise", "label": "concise", "kind": "binary"},
-    {"id": "check_in_q", "label": "asks how", "kind": "binary"},
-    {"id": "next_step", "label": "next step", "kind": "binary"},
-    {"id": "context_fit", "label": "context fit", "kind": "binary"},
-    {"id": "tone", "label": "tone", "kind": "binary"}
+    {
+      "id": "checkin_ok",
+      "label": "check-in ok",
+      "kind": "binary"
+    },
+    {
+      "id": "no_early_timer",
+      "label": "no early timer",
+      "kind": "binary"
+    },
+    {
+      "id": "acts_on_choice",
+      "label": "acts on choice",
+      "kind": "binary"
+    },
+    {
+      "id": "reflection",
+      "label": "logs rating",
+      "kind": "binary"
+    },
+    {
+      "id": "task_status",
+      "label": "task status",
+      "kind": "binary"
+    },
+    {
+      "id": "no_cal_writes",
+      "label": "calendar safe",
+      "kind": "binary"
+    },
+    {
+      "id": "concise",
+      "label": "concise",
+      "kind": "binary"
+    },
+    {
+      "id": "check_in_q",
+      "label": "asks how",
+      "kind": "binary"
+    },
+    {
+      "id": "next_step",
+      "label": "next step",
+      "kind": "binary"
+    },
+    {
+      "id": "context_fit",
+      "label": "context fit",
+      "kind": "binary"
+    },
+    {
+      "id": "tone",
+      "label": "tone",
+      "kind": "binary"
+    }
   ],
   "perf_fields": [
-    {"id": "latency_s", "label": "latency", "unit": "s"},
-    {"id": "tool_calls", "label": "tool calls"},
-    {"id": "words_per_reply", "label": "words/reply"}
+    {
+      "id": "latency_s",
+      "label": "latency",
+      "unit": "s"
+    },
+    {
+      "id": "tool_calls",
+      "label": "tool calls"
+    },
+    {
+      "id": "words_per_reply",
+      "label": "words/reply"
+    }
   ],
-  "harness_paths": ["evals/checkin.py", "evals/checkin_cases.json"],
-  "target_files": ["agent.py"]
+  "harness_paths": [
+    "evals/checkin.py",
+    "evals/checkin_cases.json"
+  ],
+  "target_files": [
+    "agent.py",
+    "tools.py",
+    "__main__.py"
+  ],
+  "train_ids": [
+    "after-long-break-short-again",
+    "almost-done-slides",
+    "break-ended-5-more",
+    "break-ended-ready",
+    "cramming-1am",
+    "exam-tomorrow-confused",
+    "exhausted-after-50",
+    "explicit-15-before-leaving",
+    "explicit-15-break",
+    "explicit-another-25",
+    "explicit-essay-45",
+    "finished-essay-break",
+    "finished-lab-report",
+    "free-afternoon-switch",
+    "french-continue",
+    "headache",
+    "in-the-zone",
+    "lab-in-5-hungry",
+    "lecture-in-13-short-break",
+    "long-break-ended-evening",
+    "second-session-short-break"
+  ],
+  "test_ids": [
+    "bored-reading",
+    "break-ended-class-soon",
+    "bus-in-10",
+    "explicit-25-conflicts-lecture",
+    "explicit-done-for-today",
+    "finished-last-task",
+    "fourth-session-fading-accept",
+    "fourth-session-long-break",
+    "french-break-10",
+    "french-break-ended-ready",
+    "french-finished-tp",
+    "half-of-reading",
+    "late-deadline-stress",
+    "late-night-stop",
+    "lecture-in-10-break",
+    "meeting-in-40-continue",
+    "phone-distraction"
+  ],
+  "split_note": "random, stratified by tags[0]; the 12 cases whose transcripts or judge notes were read while building the eval are forced into train",
+  "reps": 2,
+  "current_round": 3,
+  "goal": {
+    "target": "checkin_ok",
+    "direction": "higher",
+    "hold": [
+      "no_early_timer",
+      "no_cal_writes",
+      "concise",
+      "tone",
+      "reflection",
+      "task_status"
+    ]
+  },
+  "approve_each_round": false,
+  "max_rounds": 4,
+  "off_limits": [
+    "evals/",
+    "model choice",
+    "calendar_client.py",
+    "voice.py",
+    "sessions.py",
+    "calendar safety rules"
+  ],
+  "best": {
+    "round": 3,
+    "test_score": 0.82,
+    "note": "v3 kept: test 82% (v2 85%, tie within noise; v3 carries a required date fix), train 95%"
+  },
+  "stopped": "train saturated after round 3; round 4 not spent"
 }
