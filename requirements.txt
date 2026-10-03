@@ -2,3 +2,9 @@ claude-agent-sdk>=0.2.163
 google-api-python-client
 google-auth-oauthlib
 google-auth-httplib2
+# voice mode (optional)
+sounddevice
+edge-tts
+transformers
+torch
+numpy

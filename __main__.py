@@ -18,6 +18,7 @@ from .store import Store
 from .tools import ToolBox
 
 HELP = """Commands: /status  timer and today's totals
+          /voice   talk to Focus out loud (toggle); then Enter = talk
           /bye     end-of-day wrap-up, then exit
           /quit    exit immediately
 Anything else is a message to Focus, e.g. "plan my afternoon" or "25 min on the lab report"."""
@@ -75,17 +76,59 @@ async def amain():
         sys.exit("Claude Code isn't installed or not on PATH. Install it, run `claude` once and /login.")
     print("✓ Connected to your Claude account")
 
-    async def say(text: str):
-        try:
-            reply = await agent.send(text)
-        except ClaudeSDKError as e:
-            print(f"! Claude Code error: {e}")
-            _prompt()
+    voice = None  # a voice.Voice while voice mode is on
+
+    async def set_voice(on: bool):
+        nonlocal voice
+        if not on:
+            voice = None
+            print("🔇 Voice off.")
             return
-        print(f"\nFocus: {reply}\n", flush=True)
+        from .voice import Voice
+
+        print("🎙 Loading speech recognition (the first time downloads the Whisper model, ~1.6 GB)...", flush=True)
+        v = Voice()
+        try:
+            await asyncio.to_thread(v.load)
+        except Exception as e:  # missing package, no mic, download failed
+            print(f"! Voice unavailable: {type(e).__name__}: {e}")
+            return
+        voice = v
+        print("🎙 Voice on: Focus speaks and listens after each question. "
+              "Press Enter to talk, /voice off to stop.", flush=True)
+
+    async def listen() -> str | None:
+        print("🎙 listening...", flush=True)
+        heard = await asyncio.to_thread(voice.listen)
+        if heard:
+            print(f"you (voice)> {heard}", flush=True)
+        return heard
+
+    async def say(text: str):
+        """Send a message. In voice mode, keep talking while Focus ends on a question."""
+        from .voice import asks_question
+
+        while True:
+            try:
+                reply = await agent.send(f"[VOICE] {text}" if voice else text)
+            except ClaudeSDKError as e:
+                print(f"! Claude Code error: {e}")
+                break
+            print(f"\nFocus: {reply}\n", flush=True)
+            if not voice:
+                break
+            await asyncio.to_thread(voice.speak, reply)
+            if not asks_question(reply):
+                break
+            text = await listen()
+            if not text:
+                print("(didn't hear an answer - press Enter to talk, or type)")
+                break
         _prompt()
 
     print(HELP)
+    if config.VOICE:
+        await set_voice(True)
     await say("[EVENT] App started. Greet the student, check today's calendar and open tasks, "
               "and ask what they'd like to work on first.")
 
@@ -104,6 +147,14 @@ async def amain():
                 print(f"\n\n⏰ [{timeutil.stamp()}] {item['session']['kind']} session finished", flush=True)
                 await say(_describe(item))
             elif not item:
+                if voice:  # Enter = push to talk
+                    heard = await listen()
+                    if heard:
+                        await say(heard)
+                        continue
+                _prompt()
+            elif item in ("/voice", "/voice on", "/voice off"):
+                await set_voice(item != "/voice off" and (item == "/voice on" or voice is None))
                 _prompt()
             elif item == "/quit":
                 break

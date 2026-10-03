@@ -17,6 +17,12 @@ MODEL = os.environ.get("FOCUS_AGENT_MODEL") or None
 # low | medium | high | xhigh | max. Chat check-ins are light work; medium is a good default.
 EFFORT = os.environ.get("FOCUS_AGENT_EFFORT", "medium")
 
+# Voice mode (python -m focus_agent with FOCUS_VOICE=1, run.ps1 -Voice, or /voice in the chat).
+VOICE = os.environ.get("FOCUS_VOICE", "") == "1"
+STT_MODEL = os.environ.get("FOCUS_STT_MODEL", "openai/whisper-large-v3-turbo")  # ~1.6 GB, en+fr
+TTS_VOICE = os.environ.get("FOCUS_TTS_VOICE", "en-US-EmmaMultilingualNeural")  # speaks en and fr
+TTS_RATE = os.environ.get("FOCUS_TTS_RATE", "+5%")
+
 DEFAULT_FOCUS_MINUTES = 25
 SHORT_BREAK_MINUTES = 5
 LONG_BREAK_MINUTES = 15

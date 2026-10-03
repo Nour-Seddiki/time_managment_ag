@@ -1,4 +1,6 @@
-# Launch Focus: .\focus_agent\run.ps1 (works from any directory).
+# Launch Focus: .\focus_agent\run.ps1 [-Voice]   (works from any directory)
+param([switch]$Voice)
+if ($Voice) { $env:FOCUS_VOICE = "1" }
 $pkg = Split-Path $PSScriptRoot -Leaf
 $root = Split-Path $PSScriptRoot -Parent
 

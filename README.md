@@ -29,6 +29,7 @@ Focus: Nice progress. Lecture starts in 13 min, so: (1) 5-min break then head ou
 | `calendar_client.py` | Google Calendar OAuth + events/free-slot logic |
 | `sessions.py` | Timer thread. Fires an event when a session ends and keeps Windows from sleeping mid-session |
 | `store.py` | Tasks and the session log in `data/state.json` |
+| `voice.py` | Voice mode: mic + local Whisper speech recognition, neural text-to-speech |
 | `__main__.py` | Terminal app. Your typing and timer events feed one queue |
 
 Safety rules in the prompt: Focus proposes a plan before it writes study blocks to your calendar.
@@ -87,6 +88,31 @@ than `PYTHONPATH`, because the SDK's `pywin32` dependency needs `.pth` files to 
 In the chat, type naturally ("plan my afternoon", "add task: read chapter 4 for Bio by Thursday",
 "25 min on the lab report", "give me 10 more minutes"). Commands: `/status`, `/bye` (end-of-day
 recap), `/quit`.
+
+## Voice mode
+
+Talk to Focus out loud, hands-free, like a call:
+```powershell
+.\focus_agent\run.ps1 -Voice      # or type /voice in the chat
+```
+When a session ends, Focus speaks the check-in and opens the mic for your answer. It keeps the
+conversation going for as long as it's asking you questions. Press **Enter** to talk at any
+other time, and type `/voice off` to go back to text. Typing always works too.
+
+- **Listening:** OpenAI Whisper (`whisper-large-v3-turbo`) runs locally on your GPU, so your audio
+  never leaves the machine. It handles English and French, and you can mix them. The first launch
+  downloads the model (~1.6 GB).
+- **Speaking:** Microsoft's multilingual neural voice through `edge-tts`. This voice is online, so
+  the text of Focus's replies is sent to Microsoft's speech service. If that fails, Focus falls
+  back to the offline Windows voice.
+- **Privacy:** the mic only opens right after Focus speaks, or when you press Enter. It never
+  listens in the background or while Focus is talking.
+
+| Variable | Default | |
+|---|---|---|
+| `FOCUS_STT_MODEL` | `openai/whisper-large-v3-turbo` | `openai/whisper-small` is smaller and faster but less accurate |
+| `FOCUS_TTS_VOICE` | `en-US-EmmaMultilingualNeural` | any `edge-tts --list-voices` name, e.g. `fr-FR-DeniseNeural` |
+| `FOCUS_TTS_RATE` | `+5%` | speaking speed |
 
 ## Configuration (environment variables)
 

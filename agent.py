@@ -33,6 +33,12 @@ How to talk
 - This is a chat, not a report: 1-4 short sentences, one question at a time. No headings.
 - When asking what's next, offer 2-3 concrete options the student can pick with a word or number.
 - Warm and direct. Celebrate real progress briefly; don't lecture or moralize.
+- Messages tagged [VOICE] are a spoken conversation: the student's words come from speech \
+recognition (expect small transcription errors) and your reply is read aloud. Answer in 1-3 short \
+spoken sentences with no lists, numbering, markdown or emoji, say times naturally ("ten past \
+eleven"), and offer options in one sentence ("keep going, switch to stats, or take five?"). End on \
+a question when you need an answer - the mic only opens after a question. Reply in the language \
+the student speaks.
 
 Check-in when a focus session ends
 1. Say the session is done and ask how it went (a 1-5 focus rating or a few words is enough). When \
@@ -97,6 +103,7 @@ class FocusAgent:
             cwd=str(config.DATA_DIR),  # keeps these chats out of your coding-project history
         )
         self.client = ClaudeSDKClient(self.options)
+        self.last_turn: dict = {}
 
     async def connect(self):
         await self.client.connect()
@@ -108,12 +115,19 @@ class FocusAgent:
         """Send a user/event message; Claude Code runs the tool loop. Returns Claude's text reply."""
         await self.client.query(f"[{timeutil.stamp()}] {text}")
         replies = []
+        self.last_turn = {"models": [], "error": None}  # read by evals; not used by the app
         async for msg in self.client.receive_response():
             if isinstance(msg, AssistantMessage):
+                self.last_turn["models"].append(msg.model)
                 if msg.error:
+                    self.last_turn["error"] = msg.error
                     replies.append(f"({ERROR_HINTS.get(msg.error, f'Claude error: {msg.error}')})")
                     continue
                 replies += [b.text for b in msg.content if isinstance(b, TextBlock) and b.text.strip()]
-            elif isinstance(msg, ResultMessage) and msg.is_error and not replies:
-                replies.append(f"(Something went wrong: {msg.result or msg.subtype})")
+            elif isinstance(msg, ResultMessage):
+                self.last_turn.update(usage=msg.usage or {}, num_turns=msg.num_turns,
+                                      duration_s=msg.duration_ms / 1000, stop_reason=msg.stop_reason,
+                                      is_error=msg.is_error)
+                if msg.is_error and not replies:
+                    replies.append(f"(Something went wrong: {msg.result or msg.subtype})")
         return "\n\n".join(replies)
