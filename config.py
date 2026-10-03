@@ -19,9 +19,13 @@ EFFORT = os.environ.get("FOCUS_AGENT_EFFORT", "medium")
 
 # Voice mode (python -m focus_agent with FOCUS_VOICE=1, run.ps1 -Voice, or /voice in the chat).
 VOICE = os.environ.get("FOCUS_VOICE", "") == "1"
-# Speech model: FOCUS_STT_MODEL, else the best Whisper already downloaded into data/models/,
-# else openai/whisper-base from the Hugging Face hub (~290 MB).
-_LOCAL_STT = [DATA_DIR / "models" / name for name in ("whisper-large-v3-turbo", "whisper-small", "whisper-base")]
+# Speech model: FOCUS_STT_MODEL, else the best Whisper already downloaded into MODELS_DIR (kept
+# outside the project so cloud-synced folders like OneDrive don't upload gigabytes of weights) or
+# data/models/, else openai/whisper-base from the Hugging Face hub (~290 MB).
+MODELS_DIR = Path(os.environ.get("FOCUS_MODELS_DIR")
+                  or Path(os.environ.get("LOCALAPPDATA", Path.home() / ".cache")) / "FocusAgent" / "models")
+_LOCAL_STT = [base / name for name in ("whisper-large-v3-turbo", "whisper-small", "whisper-base")
+              for base in (MODELS_DIR, DATA_DIR / "models")]
 STT_MODEL = os.environ.get("FOCUS_STT_MODEL") or next(
     (str(p) for p in _LOCAL_STT if (p / "model.safetensors").exists()), "openai/whisper-base")
 TTS_VOICE = os.environ.get("FOCUS_TTS_VOICE", "en-US-EmmaMultilingualNeural")  # speaks en and fr

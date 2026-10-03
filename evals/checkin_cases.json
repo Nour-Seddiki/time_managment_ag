@@ -1,0 +1,581 @@
+[
+  {
+    "id": "lecture-in-13-short-break",
+    "tags": ["calendar_soon", "consent"],
+    "now": "2026-10-05T10:47",
+    "calendar": [{"title": "Linear Algebra lecture", "start": "2026-10-05T11:00", "end": "2026-10-05T12:30"}],
+    "tasks": [
+      {"id": "t1", "title": "Physics lab report", "course": "Physics", "due": "2026-10-07T23:59", "priority": "high"},
+      {"id": "t2", "title": "Stats homework 3", "course": "Statistics", "due": "2026-10-09T23:59", "priority": "medium"}
+    ],
+    "ended": {"kind": "focus", "label": "Physics lab report", "task_id": "t1", "minutes": 25},
+    "turns": ["4/5 got the intro done", "ok short break then"],
+    "expect": {"reflection": true, "rating": 4, "task_done": null, "consent_turn": 1,
+               "start": {"kind": "break", "min": 3, "max": 10, "end_by": "2026-10-05T11:00"},
+               "must_consider": "The Linear Algebra lecture starts at 11:00, 13 minutes from now, so a full 25-minute focus block does not fit."}
+  },
+  {
+    "id": "meeting-in-40-continue",
+    "tags": ["calendar_soon", "consent"],
+    "now": "2026-10-05T14:20",
+    "calendar": [{"title": "Project group meeting", "start": "2026-10-05T15:00", "end": "2026-10-05T16:00"}],
+    "tasks": [
+      {"id": "t1", "title": "ML project: data cleaning", "course": "Machine Learning", "due": "2026-10-08T23:59", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "ML project: data cleaning", "task_id": "t1", "minutes": 25},
+    "turns": ["pretty good, 4", "let's keep going on the same thing"],
+    "expect": {"reflection": true, "rating": 4, "task_done": null, "consent_turn": 1,
+               "start": {"kind": "focus", "min": 10, "max": 40, "task_id": "t1", "end_by": "2026-10-05T15:00"},
+               "must_consider": "The project group meeting starts at 15:00, 40 minutes from now; the next block should end before it."}
+  },
+  {
+    "id": "exam-tomorrow-confused",
+    "tags": ["calendar_soon"],
+    "now": "2026-10-05T19:30",
+    "calendar": [{"title": "Calculus exam", "start": "2026-10-06T09:00", "end": "2026-10-06T11:00"}],
+    "tasks": [
+      {"id": "t1", "title": "Calculus revision", "course": "Calculus", "due": "2026-10-06T09:00", "priority": "high"},
+      {"id": "t2", "title": "History essay draft", "course": "History", "due": "2026-10-12T23:59", "priority": "medium"}
+    ],
+    "ended": {"kind": "focus", "label": "Calculus revision", "task_id": "t1", "minutes": 25},
+    "turns": ["3. still confused about integration by parts"],
+    "expect": {"reflection": true, "rating": 3, "task_done": null, "consent_turn": null,
+               "must_consider": "The calculus exam is tomorrow at 09:00 and the student is stuck on integration by parts; the next step should stay on calculus (that topic), not switch to the essay due next week."}
+  },
+  {
+    "id": "lab-in-5-hungry",
+    "tags": ["calendar_soon"],
+    "now": "2026-10-05T12:55",
+    "calendar": [{"title": "Chemistry lab", "start": "2026-10-05T13:00", "end": "2026-10-05T15:00", "location": "Building B"}],
+    "tasks": [
+      {"id": "t1", "title": "Read chapter 6 (organic chem)", "course": "Chemistry", "due": "2026-10-08T23:59", "priority": "medium"}
+    ],
+    "ended": {"kind": "focus", "label": "Read chapter 6 (organic chem)", "task_id": "t1", "minutes": 25},
+    "turns": ["2/5 couldn't focus, hungry"],
+    "expect": {"reflection": true, "rating": 2, "task_done": null, "consent_turn": null,
+               "must_consider": "The chemistry lab starts at 13:00, in 5 minutes, and the student is hungry; no new study session fits - it is time to grab food if possible and head to the lab."}
+  },
+  {
+    "id": "free-afternoon-switch",
+    "tags": ["calendar_free", "consent"],
+    "now": "2026-10-05T14:00",
+    "calendar": [{"title": "Dinner with friends", "start": "2026-10-05T18:30", "end": "2026-10-05T20:30"}],
+    "tasks": [
+      {"id": "t1", "title": "Sociology essay", "course": "Sociology", "due": "2026-10-10T23:59", "priority": "medium"},
+      {"id": "t2", "title": "Stats homework 3", "course": "Statistics", "due": "2026-10-07T23:59", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Sociology essay", "task_id": "t1", "minutes": 25},
+    "turns": ["4, good progress on the essay", "switch to the stats homework, 25 min"],
+    "expect": {"reflection": true, "rating": 4, "task_done": null, "consent_turn": 1,
+               "start": {"kind": "focus", "min": 20, "max": 30, "task_id": "t2"},
+               "must_consider": "The afternoon is free until 18:30; the stats homework is due sooner (Wednesday) than the essay."}
+  },
+  {
+    "id": "bus-in-10",
+    "tags": ["calendar_soon"],
+    "now": "2026-10-05T16:35",
+    "calendar": [{"title": "Bus home", "start": "2026-10-05T16:45", "end": "2026-10-05T17:15"}],
+    "tasks": [
+      {"id": "t1", "title": "Problem set 2 (questions 1-5)", "course": "Physics", "due": "2026-10-08T23:59", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Problem set 2 (questions 1-5)", "task_id": "t1", "minutes": 25},
+    "turns": ["5! finished question 3"],
+    "expect": {"reflection": true, "rating": 5, "task_done": null, "consent_turn": null,
+               "must_consider": "The bus home leaves at 16:45, in 10 minutes, so it is time to pack up rather than start another block; questions 4-5 are still left."}
+  },
+  {
+    "id": "lecture-in-10-break",
+    "tags": ["calendar_soon", "consent"],
+    "now": "2026-10-05T09:50",
+    "calendar": [
+      {"title": "Algorithms lecture", "start": "2026-10-05T10:00", "end": "2026-10-05T11:00"},
+      {"title": "Algorithms lab", "start": "2026-10-05T11:15", "end": "2026-10-05T12:45"}
+    ],
+    "tasks": [
+      {"id": "t1", "title": "Review sorting algorithms notes", "course": "Algorithms", "due": "2026-10-05T10:00", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Review sorting algorithms notes", "task_id": "t1", "minutes": 25},
+    "turns": ["ok, 3/5", "yeah break"],
+    "expect": {"reflection": true, "rating": 3, "task_done": null, "consent_turn": 1,
+               "start": {"kind": "break", "min": 3, "max": 10, "end_by": "2026-10-05T10:00"},
+               "must_consider": "The algorithms lecture starts at 10:00, in 10 minutes."}
+  },
+  {
+    "id": "exhausted-after-50",
+    "tags": ["energy"],
+    "now": "2026-10-05T15:10",
+    "calendar": [{"title": "Gym", "start": "2026-10-05T19:00", "end": "2026-10-05T20:00"}],
+    "tasks": [
+      {"id": "t1", "title": "ML project: model training", "course": "Machine Learning", "due": "2026-10-09T23:59", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "ML project: model training", "task_id": "t1", "minutes": 50},
+    "turns": ["4 but I'm exhausted honestly"],
+    "expect": {"reflection": true, "rating": 4, "task_done": null, "consent_turn": null,
+               "must_consider": "The student just did a 50-minute session and says they are exhausted; the suggestion should be a real rest (a long break of 15+ minutes, or stopping), not another block right away."}
+  },
+  {
+    "id": "in-the-zone",
+    "tags": ["energy"],
+    "now": "2026-10-05T10:30",
+    "calendar": [{"title": "Lunch with Sami", "start": "2026-10-05T12:30", "end": "2026-10-05T13:30"}],
+    "tasks": [
+      {"id": "t1", "title": "Coding assignment 2", "course": "Software Engineering", "due": "2026-10-07T23:59", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Coding assignment 2", "task_id": "t1", "minutes": 25},
+    "turns": ["5/5 in the zone!"],
+    "expect": {"reflection": true, "rating": 5, "task_done": null, "consent_turn": null,
+               "must_consider": "The student is in flow with 2 hours free before lunch; continuing on the same task (possibly a longer block) should be offered, not forced into a break."}
+  },
+  {
+    "id": "phone-distraction",
+    "tags": ["energy"],
+    "now": "2026-10-05T21:00",
+    "calendar": [{"title": "Microeconomics exam", "start": "2026-10-08T14:00", "end": "2026-10-08T16:00"}],
+    "tasks": [
+      {"id": "t1", "title": "Microeconomics reading ch. 3-4", "course": "Economics", "due": "2026-10-08T14:00", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Microeconomics reading ch. 3-4", "task_id": "t1", "minutes": 25},
+    "turns": ["2. kept checking my phone"],
+    "expect": {"reflection": true, "rating": 2, "task_done": null, "consent_turn": null,
+               "must_consider": "Focus was low because of phone distraction; a good reply suggests a concrete fix (e.g. phone in another room) without guilt-tripping."}
+  },
+  {
+    "id": "headache",
+    "tags": ["energy"],
+    "now": "2026-10-05T17:00",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "Organic chemistry flashcards", "course": "Chemistry", "due": "2026-10-09T23:59", "priority": "medium"}
+    ],
+    "ended": {"kind": "focus", "label": "Organic chemistry flashcards", "task_id": "t1", "minutes": 25},
+    "turns": ["1/5 I have a headache"],
+    "expect": {"reflection": true, "rating": 1, "task_done": null, "consent_turn": null,
+               "must_consider": "The student has a headache; the priority is rest (water, a long break or stopping), not more studying."}
+  },
+  {
+    "id": "bored-reading",
+    "tags": ["energy"],
+    "now": "2026-10-05T11:15",
+    "calendar": [{"title": "Seminar", "start": "2026-10-05T14:00", "end": "2026-10-05T15:30"}],
+    "tasks": [
+      {"id": "t1", "title": "Philosophy reading: Kant", "course": "Philosophy", "due": "2026-10-09T23:59", "priority": "medium"},
+      {"id": "t2", "title": "Linear algebra exercises 4.1-4.6", "course": "Linear Algebra", "due": "2026-10-08T23:59", "priority": "medium"}
+    ],
+    "ended": {"kind": "focus", "label": "Philosophy reading: Kant", "task_id": "t1", "minutes": 25},
+    "turns": ["3, it's so boring"],
+    "expect": {"reflection": true, "rating": 3, "task_done": null, "consent_turn": null,
+               "must_consider": "The student is bored with the reading; switching to the linear algebra exercises (or changing technique) is a sensible option to offer."}
+  },
+  {
+    "id": "french-continue",
+    "tags": ["energy", "consent", "french"],
+    "now": "2026-10-05T11:00",
+    "calendar": [{"title": "Déjeuner", "start": "2026-10-05T13:00", "end": "2026-10-05T14:00"}],
+    "tasks": [
+      {"id": "t1", "title": "Exercices de probabilités 1-6", "course": "Probabilités", "due": "2026-10-07T23:59", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Exercices de probabilités 1-6", "task_id": "t1", "minutes": 25},
+    "turns": ["c'était bien, 4/5, j'ai fini les exercices 1 à 3", "on continue"],
+    "expect": {"reflection": true, "rating": 4, "task_done": null, "consent_turn": 1,
+               "start": {"kind": "focus", "min": 15, "max": 50, "task_id": "t1"},
+               "must_consider": "The student writes in French and wants to continue the same exercises (4-6 remain); free until 13:00."}
+  },
+  {
+    "id": "late-deadline-stress",
+    "tags": ["energy"],
+    "now": "2026-10-05T22:40",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "Physics lab report", "course": "Physics", "due": "2026-10-06T23:59", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Physics lab report", "task_id": "t1", "minutes": 25},
+    "turns": ["3/5 stressed, still have the conclusion to write"],
+    "expect": {"reflection": true, "rating": 3, "task_done": null, "consent_turn": null,
+               "must_consider": "It is 22:40 and the report is due tomorrow at 23:59; a realistic suggestion is at most one more short block or sleeping and finishing tomorrow - not an all-nighter."}
+  },
+  {
+    "id": "finished-lab-report",
+    "tags": ["task_done"],
+    "now": "2026-10-05T15:00",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "Physics lab report", "course": "Physics", "due": "2026-10-06T23:59", "priority": "high"},
+      {"id": "t2", "title": "Stats homework 3", "course": "Statistics", "due": "2026-10-09T23:59", "priority": "medium"},
+      {"id": "t3", "title": "Optional reading: history of science", "course": "Physics", "due": null, "priority": "low"}
+    ],
+    "ended": {"kind": "focus", "label": "Physics lab report", "task_id": "t1", "minutes": 25},
+    "turns": ["5/5 finished the lab report!!"],
+    "expect": {"reflection": true, "rating": 5, "task_done": "t1", "consent_turn": null,
+               "must_consider": "The lab report is finished; the next priority by deadline is the stats homework (due Friday), not the optional reading."}
+  },
+  {
+    "id": "finished-essay-break",
+    "tags": ["task_done", "consent"],
+    "now": "2026-10-05T16:00",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "History essay", "course": "History", "due": "2026-10-06T23:59", "priority": "high"},
+      {"id": "t2", "title": "Spanish vocab list 5", "course": "Spanish", "due": "2026-10-08T23:59", "priority": "low"}
+    ],
+    "ended": {"kind": "focus", "label": "History essay", "task_id": "t1", "minutes": 25},
+    "turns": ["done with the essay, 4", "10 min break please"],
+    "expect": {"reflection": true, "rating": 4, "task_done": "t1", "consent_turn": 1,
+               "start": {"kind": "break", "min": 9, "max": 11},
+               "must_consider": "The essay is finished; the student asked for a 10-minute break."}
+  },
+  {
+    "id": "almost-done-slides",
+    "tags": ["task_done"],
+    "now": "2026-10-05T13:30",
+    "calendar": [{"title": "Presentation rehearsal", "start": "2026-10-05T17:00", "end": "2026-10-05T18:00"}],
+    "tasks": [
+      {"id": "t1", "title": "Presentation slides", "course": "Marketing", "due": "2026-10-06T10:00", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Presentation slides", "task_id": "t1", "minutes": 25},
+    "turns": ["4, almost done with the slides, maybe 15 more min"],
+    "expect": {"reflection": true, "rating": 4, "task_done": null, "consent_turn": null,
+               "must_consider": "The slides are not finished yet (about 15 minutes left); a short block to finish them is the natural next step."}
+  },
+  {
+    "id": "french-finished-tp",
+    "tags": ["task_done", "french"],
+    "now": "2026-10-05T15:45",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "TP de chimie", "course": "Chimie", "due": "2026-10-06T23:59", "priority": "high"},
+      {"id": "t2", "title": "Révision partiel d'analyse", "course": "Analyse", "due": "2026-10-08T09:00", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "TP de chimie", "task_id": "t1", "minutes": 25},
+    "turns": ["j'ai terminé le TP, 5/5"],
+    "expect": {"reflection": true, "rating": 5, "task_done": "t1", "consent_turn": null,
+               "must_consider": "The chemistry TP is done; the analysis exam revision (exam Thursday morning) is the next priority. The student writes in French."}
+  },
+  {
+    "id": "finished-last-task",
+    "tags": ["task_done"],
+    "now": "2026-10-05T18:10",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "Problem set 4", "course": "Calculus", "due": "2026-10-07T23:59", "priority": "medium"}
+    ],
+    "ended": {"kind": "focus", "label": "Problem set 4", "task_id": "t1", "minutes": 25},
+    "turns": ["finished the problem set, 4"],
+    "expect": {"reflection": true, "rating": 4, "task_done": "t1", "consent_turn": null,
+               "must_consider": "That was the only open task; with nothing else on the list Focus should suggest a break or wrapping up, or ask what else they have - not invent tasks."}
+  },
+  {
+    "id": "half-of-reading",
+    "tags": ["task_done"],
+    "now": "2026-10-05T10:00",
+    "calendar": [{"title": "Biology lecture", "start": "2026-10-05T12:00", "end": "2026-10-05T13:30"}],
+    "tasks": [
+      {"id": "t1", "title": "Read chapters 4 and 5", "course": "Biology", "due": "2026-10-06T08:00", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Read chapters 4 and 5", "task_id": "t1", "minutes": 25},
+    "turns": ["read chapter 4, 3/5"],
+    "expect": {"reflection": true, "rating": 3, "task_done": null, "consent_turn": null,
+               "must_consider": "Only chapter 4 is read; chapter 5 is still left, so the task is not done."}
+  },
+  {
+    "id": "explicit-another-25",
+    "tags": ["explicit_choice", "consent"],
+    "now": "2026-10-05T10:00",
+    "calendar": [{"title": "Lunch", "start": "2026-10-05T13:00", "end": "2026-10-05T14:00"}],
+    "tasks": [
+      {"id": "t1", "title": "Thesis literature review", "course": "Thesis", "due": "2026-10-16T23:59", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Thesis literature review", "task_id": "t1", "minutes": 25},
+    "turns": ["4, another 25 on the same please"],
+    "expect": {"reflection": true, "rating": 4, "task_done": null, "consent_turn": 0,
+               "start": {"kind": "focus", "min": 25, "max": 25, "task_id": "t1"},
+               "must_consider": "The student explicitly asked for another 25 minutes on the same task; Focus should just start it."}
+  },
+  {
+    "id": "explicit-15-break",
+    "tags": ["explicit_choice", "consent"],
+    "now": "2026-10-05T15:30",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "Accounting exercises", "course": "Accounting", "due": "2026-10-08T23:59", "priority": "medium"}
+    ],
+    "ended": {"kind": "focus", "label": "Accounting exercises", "task_id": "t1", "minutes": 25},
+    "turns": ["3/5, I need a 15 min break"],
+    "expect": {"reflection": true, "rating": 3, "task_done": null, "consent_turn": 0,
+               "start": {"kind": "break", "min": 15, "max": 15},
+               "must_consider": "The student explicitly asked for a 15-minute break."}
+  },
+  {
+    "id": "explicit-essay-45",
+    "tags": ["explicit_choice", "consent"],
+    "now": "2026-10-05T14:00",
+    "calendar": [{"title": "Volunteering", "start": "2026-10-05T17:30", "end": "2026-10-05T19:00"}],
+    "tasks": [
+      {"id": "t1", "title": "Spanish grammar drills", "course": "Spanish", "due": "2026-10-09T23:59", "priority": "low"},
+      {"id": "t2", "title": "Political science essay", "course": "Political Science", "due": "2026-10-07T23:59", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Spanish grammar drills", "task_id": "t1", "minutes": 25},
+    "turns": ["good. let's do the essay now for 45 min"],
+    "expect": {"reflection": true, "rating": null, "task_done": null, "consent_turn": 0,
+               "start": {"kind": "focus", "min": 45, "max": 45, "task_id": "t2"},
+               "must_consider": "The student explicitly chose the essay for 45 minutes; there is time before 17:30."}
+  },
+  {
+    "id": "explicit-15-before-leaving",
+    "tags": ["explicit_choice", "consent"],
+    "now": "2026-10-05T16:30",
+    "calendar": [{"title": "Leave for work shift", "start": "2026-10-05T17:00", "end": "2026-10-05T21:00"}],
+    "tasks": [
+      {"id": "t1", "title": "Databases assignment", "course": "Databases", "due": "2026-10-07T23:59", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Databases assignment", "task_id": "t1", "minutes": 25},
+    "turns": ["5, keep going but only 15 min, I have to leave at 5"],
+    "expect": {"reflection": true, "rating": 5, "task_done": null, "consent_turn": 0,
+               "start": {"kind": "focus", "min": 15, "max": 15, "task_id": "t1", "end_by": "2026-10-05T17:00"},
+               "must_consider": "The student must leave at 17:00 and asked for exactly 15 more minutes."}
+  },
+  {
+    "id": "explicit-done-for-today",
+    "tags": ["explicit_choice"],
+    "now": "2026-10-05T19:45",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "Statistics project", "course": "Statistics", "due": "2026-10-09T23:59", "priority": "high"},
+      {"id": "t2", "title": "German vocabulary", "course": "German", "due": "2026-10-07T23:59", "priority": "low"}
+    ],
+    "earlier": [
+      {"kind": "focus", "label": "Statistics project", "task_id": "t1", "start": "2026-10-05T17:30", "minutes": 25},
+      {"kind": "break", "label": "Short break", "start": "2026-10-05T17:55", "minutes": 5},
+      {"kind": "focus", "label": "Statistics project", "task_id": "t1", "start": "2026-10-05T18:30", "minutes": 25},
+      {"kind": "break", "label": "Short break", "start": "2026-10-05T18:55", "minutes": 10}
+    ],
+    "ended": {"kind": "focus", "label": "Statistics project", "task_id": "t1", "minutes": 25},
+    "turns": ["done for today, 4"],
+    "expect": {"reflection": true, "rating": 4, "task_done": null, "consent_turn": null,
+               "must_consider": "The student is stopping for the day; Focus should accept it (brief recap, maybe tomorrow's first task) and not push more work."}
+  },
+  {
+    "id": "french-break-10",
+    "tags": ["explicit_choice", "consent", "french"],
+    "now": "2026-10-05T10:20",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "Fiche de révision d'histoire", "course": "Histoire", "due": "2026-10-07T23:59", "priority": "medium"}
+    ],
+    "ended": {"kind": "focus", "label": "Fiche de révision d'histoire", "task_id": "t1", "minutes": 25},
+    "turns": ["pause de 10 minutes stp, 3/5"],
+    "expect": {"reflection": true, "rating": 3, "task_done": null, "consent_turn": 0,
+               "start": {"kind": "break", "min": 10, "max": 10},
+               "must_consider": "The student asked in French for a 10-minute break."}
+  },
+  {
+    "id": "explicit-25-conflicts-lecture",
+    "tags": ["explicit_choice", "calendar_soon"],
+    "now": "2026-10-05T13:40",
+    "calendar": [{"title": "Data Structures lecture", "start": "2026-10-05T14:00", "end": "2026-10-05T15:30"}],
+    "tasks": [
+      {"id": "t1", "title": "Data structures homework", "course": "Data Structures", "due": "2026-10-06T23:59", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Data structures homework", "task_id": "t1", "minutes": 25},
+    "turns": ["4, another 25 on this"],
+    "expect": {"reflection": true, "rating": 4, "task_done": null, "consent_turn": 0,
+               "start": {"kind": "focus", "min": 5, "max": 20, "task_id": "t1", "end_by": "2026-10-05T14:00", "optional": true},
+               "must_consider": "A 25-minute block would run into the 14:00 lecture (20 minutes away); Focus should point out the conflict and shorten the block or check with the student, not blindly start 25 minutes."}
+  },
+  {
+    "id": "fourth-session-long-break",
+    "tags": ["streak"],
+    "now": "2026-10-05T11:20",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "Operating systems revision", "course": "Operating Systems", "due": "2026-10-09T09:00", "priority": "high"}
+    ],
+    "earlier": [
+      {"kind": "focus", "label": "Operating systems revision", "task_id": "t1", "start": "2026-10-05T09:15", "minutes": 25},
+      {"kind": "break", "label": "Short break", "start": "2026-10-05T09:40", "minutes": 5},
+      {"kind": "focus", "label": "Operating systems revision", "task_id": "t1", "start": "2026-10-05T09:45", "minutes": 25},
+      {"kind": "break", "label": "Short break", "start": "2026-10-05T10:10", "minutes": 5},
+      {"kind": "focus", "label": "Operating systems revision", "task_id": "t1", "start": "2026-10-05T10:15", "minutes": 25},
+      {"kind": "break", "label": "Short break", "start": "2026-10-05T10:40", "minutes": 5}
+    ],
+    "ended": {"kind": "focus", "label": "Operating systems revision", "task_id": "t1", "minutes": 25},
+    "turns": ["4/5"],
+    "expect": {"reflection": true, "rating": 4, "task_done": null, "consent_turn": null,
+               "must_consider": "This was the 4th focus session in a row with only short breaks; a long break (15-30 minutes) is due."}
+  },
+  {
+    "id": "fourth-session-fading-accept",
+    "tags": ["streak", "consent"],
+    "now": "2026-10-05T16:20",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "Econometrics problem set", "course": "Econometrics", "due": "2026-10-08T23:59", "priority": "high"}
+    ],
+    "earlier": [
+      {"kind": "focus", "label": "Econometrics problem set", "task_id": "t1", "start": "2026-10-05T14:15", "minutes": 25},
+      {"kind": "break", "label": "Short break", "start": "2026-10-05T14:40", "minutes": 5},
+      {"kind": "focus", "label": "Econometrics problem set", "task_id": "t1", "start": "2026-10-05T14:45", "minutes": 25},
+      {"kind": "break", "label": "Short break", "start": "2026-10-05T15:10", "minutes": 5},
+      {"kind": "focus", "label": "Econometrics problem set", "task_id": "t1", "start": "2026-10-05T15:15", "minutes": 25},
+      {"kind": "break", "label": "Short break", "start": "2026-10-05T15:40", "minutes": 5}
+    ],
+    "ended": {"kind": "focus", "label": "Econometrics problem set", "task_id": "t1", "minutes": 25},
+    "turns": ["3, I'm fading", "ok long break"],
+    "expect": {"reflection": true, "rating": 3, "task_done": null, "consent_turn": 1,
+               "start": {"kind": "break", "min": 15, "max": 30},
+               "must_consider": "Fourth focus session in a row and the student is fading; a long break is due."}
+  },
+  {
+    "id": "second-session-short-break",
+    "tags": ["streak", "consent"],
+    "now": "2026-10-05T09:55",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "Japanese kanji practice", "course": "Japanese", "due": "2026-10-08T23:59", "priority": "medium"}
+    ],
+    "earlier": [
+      {"kind": "focus", "label": "Japanese kanji practice", "task_id": "t1", "start": "2026-10-05T09:00", "minutes": 25},
+      {"kind": "break", "label": "Short break", "start": "2026-10-05T09:25", "minutes": 5}
+    ],
+    "ended": {"kind": "focus", "label": "Japanese kanji practice", "task_id": "t1", "minutes": 25},
+    "turns": ["4", "break"],
+    "expect": {"reflection": true, "rating": 4, "task_done": null, "consent_turn": 1,
+               "start": {"kind": "break", "min": 3, "max": 10},
+               "must_consider": "Only the second focus session of the day; a short break (about 5 minutes) fits."}
+  },
+  {
+    "id": "after-long-break-short-again",
+    "tags": ["streak", "consent"],
+    "now": "2026-10-05T12:40",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "Compilers project", "course": "Compilers", "due": "2026-10-10T23:59", "priority": "high"}
+    ],
+    "earlier": [
+      {"kind": "focus", "label": "Compilers project", "task_id": "t1", "start": "2026-10-05T09:00", "minutes": 25},
+      {"kind": "break", "label": "Short break", "start": "2026-10-05T09:25", "minutes": 5},
+      {"kind": "focus", "label": "Compilers project", "task_id": "t1", "start": "2026-10-05T09:30", "minutes": 25},
+      {"kind": "break", "label": "Short break", "start": "2026-10-05T09:55", "minutes": 5},
+      {"kind": "focus", "label": "Compilers project", "task_id": "t1", "start": "2026-10-05T10:00", "minutes": 25},
+      {"kind": "break", "label": "Short break", "start": "2026-10-05T10:25", "minutes": 5},
+      {"kind": "focus", "label": "Compilers project", "task_id": "t1", "start": "2026-10-05T10:30", "minutes": 25},
+      {"kind": "break", "label": "Long break", "start": "2026-10-05T10:55", "minutes": 20},
+      {"kind": "focus", "label": "Compilers project", "task_id": "t1", "start": "2026-10-05T11:45", "minutes": 25}
+    ],
+    "ended": {"kind": "focus", "label": "Compilers project", "task_id": "t1", "minutes": 25},
+    "turns": ["4", "short break pls"],
+    "expect": {"reflection": true, "rating": 4, "task_done": null, "consent_turn": 1,
+               "start": {"kind": "break", "min": 3, "max": 10},
+               "must_consider": "A long break already happened two sessions ago, so a short break is right now."}
+  },
+  {
+    "id": "break-ended-ready",
+    "tags": ["break_ended", "consent"],
+    "now": "2026-10-05T10:05",
+    "calendar": [{"title": "Lunch", "start": "2026-10-05T12:30", "end": "2026-10-05T13:30"}],
+    "tasks": [
+      {"id": "t1", "title": "Physics lab report", "course": "Physics", "due": "2026-10-06T23:59", "priority": "high"},
+      {"id": "t2", "title": "Sociology reading", "course": "Sociology", "due": "2026-10-12T23:59", "priority": "low"}
+    ],
+    "earlier": [
+      {"kind": "focus", "label": "Physics lab report", "task_id": "t1", "start": "2026-10-05T09:35", "minutes": 25}
+    ],
+    "ended": {"kind": "break", "label": "Short break", "minutes": 5},
+    "turns": ["yeah ready, let's do the lab report"],
+    "expect": {"reflection": false, "rating": null, "task_done": null, "consent_turn": 0,
+               "start": {"kind": "focus", "min": 15, "max": 50, "task_id": "t1"},
+               "must_consider": "The break is over; the student was in the middle of the lab report, which is also the closest deadline, so resuming it is the natural proposal."}
+  },
+  {
+    "id": "break-ended-5-more",
+    "tags": ["break_ended", "consent"],
+    "now": "2026-10-05T15:05",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "Marketing case study", "course": "Marketing", "due": "2026-10-08T23:59", "priority": "medium"}
+    ],
+    "earlier": [
+      {"kind": "focus", "label": "Marketing case study", "task_id": "t1", "start": "2026-10-05T14:35", "minutes": 25}
+    ],
+    "ended": {"kind": "break", "label": "Short break", "minutes": 5},
+    "turns": ["5 more min pls"],
+    "expect": {"reflection": false, "rating": null, "task_done": null, "consent_turn": 0,
+               "start": {"kind": "break", "min": 5, "max": 5},
+               "must_consider": "The student asked for 5 more minutes of break."}
+  },
+  {
+    "id": "break-ended-class-soon",
+    "tags": ["break_ended", "calendar_soon"],
+    "now": "2026-10-05T13:50",
+    "calendar": [{"title": "Statistics lecture", "start": "2026-10-05T14:00", "end": "2026-10-05T15:30"}],
+    "tasks": [
+      {"id": "t1", "title": "Stats homework 3", "course": "Statistics", "due": "2026-10-07T23:59", "priority": "high"}
+    ],
+    "earlier": [
+      {"kind": "focus", "label": "Stats homework 3", "task_id": "t1", "start": "2026-10-05T13:20", "minutes": 25}
+    ],
+    "ended": {"kind": "break", "label": "Short break", "minutes": 5},
+    "turns": ["ok what now"],
+    "expect": {"reflection": false, "rating": null, "task_done": null, "consent_turn": null,
+               "must_consider": "The statistics lecture starts at 14:00, in 10 minutes; a 25-minute block does not fit - head to class or do a very short review."}
+  },
+  {
+    "id": "long-break-ended-evening",
+    "tags": ["break_ended"],
+    "now": "2026-10-05T20:30",
+    "calendar": [{"title": "Biochemistry exam", "start": "2026-10-08T09:00", "end": "2026-10-08T11:00"}],
+    "tasks": [
+      {"id": "t1", "title": "English essay", "course": "English", "due": "2026-10-12T23:59", "priority": "medium"},
+      {"id": "t2", "title": "Biochemistry revision", "course": "Biochemistry", "due": "2026-10-08T09:00", "priority": "high"}
+    ],
+    "earlier": [
+      {"kind": "focus", "label": "English essay", "task_id": "t1", "start": "2026-10-05T19:30", "minutes": 25}
+    ],
+    "ended": {"kind": "break", "label": "Dinner break", "minutes": 30},
+    "turns": ["ready, what should i do"],
+    "expect": {"reflection": false, "rating": null, "task_done": null, "consent_turn": null,
+               "must_consider": "The biochemistry exam on Thursday is the closest deadline, so biochemistry revision should be the main proposal over the essay due next week."}
+  },
+  {
+    "id": "french-break-ended-ready",
+    "tags": ["break_ended", "consent", "french"],
+    "now": "2026-10-05T16:35",
+    "calendar": [],
+    "tasks": [
+      {"id": "t1", "title": "Projet de programmation", "course": "Informatique", "due": "2026-10-07T23:59", "priority": "high"}
+    ],
+    "earlier": [
+      {"kind": "focus", "label": "Projet de programmation", "task_id": "t1", "start": "2026-10-05T16:05", "minutes": 25}
+    ],
+    "ended": {"kind": "break", "label": "Petite pause", "minutes": 5},
+    "turns": ["ok je suis prêt"],
+    "expect": {"reflection": false, "rating": null, "task_done": null, "consent_turn": 0,
+               "start": {"kind": "focus", "min": 15, "max": 50, "task_id": "t1"},
+               "must_consider": "The student writes in French and is ready to resume the programming project."}
+  },
+  {
+    "id": "late-night-stop",
+    "tags": ["late_night"],
+    "now": "2026-10-05T23:30",
+    "calendar": [{"title": "Morning lecture", "start": "2026-10-06T08:30", "end": "2026-10-06T10:00"}],
+    "tasks": [
+      {"id": "t1", "title": "Literature essay", "course": "Literature", "due": "2026-10-09T23:59", "priority": "medium"}
+    ],
+    "ended": {"kind": "focus", "label": "Literature essay", "task_id": "t1", "minutes": 25},
+    "turns": ["4, but it's late"],
+    "expect": {"reflection": true, "rating": 4, "task_done": null, "consent_turn": null,
+               "must_consider": "It is 23:30 with a lecture at 08:30 and the essay is not due until Friday; Focus should suggest stopping for the night."}
+  },
+  {
+    "id": "cramming-1am",
+    "tags": ["late_night"],
+    "now": "2026-10-06T01:10",
+    "calendar": [{"title": "Genetics exam", "start": "2026-10-06T09:00", "end": "2026-10-06T11:00"}],
+    "tasks": [
+      {"id": "t1", "title": "Genetics revision", "course": "Genetics", "due": "2026-10-06T09:00", "priority": "high"}
+    ],
+    "ended": {"kind": "focus", "label": "Genetics revision", "task_id": "t1", "minutes": 25},
+    "turns": ["3, one more?"],
+    "expect": {"reflection": true, "rating": 3, "task_done": null, "consent_turn": null,
+               "must_consider": "It is 01:10 and the exam is at 09:00; sleep should be prioritized over another session (at most a very short wrap-up)."}
+  }
+]

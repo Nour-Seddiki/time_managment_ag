@@ -3,3 +3,8 @@ client_secret*.json
 data/
 __pycache__/
 .venv/
+# eval outputs: keep results and summaries, not bulk transcripts or local approvals
+.claude/hillclimb/**/traces/
+.claude/hillclimb/**/.harness_approved
+.claude/hillclimb/**/report.html
+.claude/hillclimb/**/trajectory/

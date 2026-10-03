@@ -1,0 +1,24 @@
+{
+  "flow": "checkin",
+  "description": "End-of-session check-in: after a focus or break timer ends, Focus asks how it went, logs it, and helps the student choose the next step without acting before they choose.",
+  "metrics": [
+    {"id": "checkin_ok", "label": "check-in ok", "kind": "binary"},
+    {"id": "no_early_timer", "label": "no early timer", "kind": "binary"},
+    {"id": "acts_on_choice", "label": "acts on choice", "kind": "binary"},
+    {"id": "reflection", "label": "logs rating", "kind": "binary"},
+    {"id": "task_status", "label": "task status", "kind": "binary"},
+    {"id": "no_cal_writes", "label": "calendar safe", "kind": "binary"},
+    {"id": "concise", "label": "concise", "kind": "binary"},
+    {"id": "check_in_q", "label": "asks how", "kind": "binary"},
+    {"id": "next_step", "label": "next step", "kind": "binary"},
+    {"id": "context_fit", "label": "context fit", "kind": "binary"},
+    {"id": "tone", "label": "tone", "kind": "binary"}
+  ],
+  "perf_fields": [
+    {"id": "latency_s", "label": "latency", "unit": "s"},
+    {"id": "tool_calls", "label": "tool calls"},
+    {"id": "words_per_reply", "label": "words/reply"}
+  ],
+  "harness_paths": ["evals/checkin.py", "evals/checkin_cases.json"],
+  "target_files": ["agent.py"]
+}

@@ -100,10 +100,13 @@ conversation going for as long as it's asking you questions. Press **Enter** to 
 other time, and type `/voice off` to go back to text. Typing always works too.
 
 - **Listening:** OpenAI Whisper runs locally on your GPU, so your audio never leaves the machine.
-  It handles English and French. Focus uses the best model it finds in `data/models/`, trying
-  `whisper-large-v3-turbo` (~1.6 GB, most accurate), then `whisper-small`, then `whisper-base`
-  (~290 MB). If none is there, it downloads `openai/whisper-base`. To add a model, put its files from
-  `huggingface.co/openai/<name>` into `data/models/<name>/`.
+  It handles English and French. Focus uses the best model it finds in
+  `%LOCALAPPDATA%\FocusAgent\models\` (or `data/models/`), trying `whisper-large-v3-turbo`
+  (~1.6 GB, most accurate), then `whisper-small`, then `whisper-base` (~290 MB). If none is there,
+  it downloads `openai/whisper-base`. To add a model, put its files from
+  `huggingface.co/openai/<name>` into `%LOCALAPPDATA%\FocusAgent\models\<name>\`. That folder sits
+  outside the project on purpose, so cloud-synced folders like OneDrive don't upload gigabytes of
+  model weights.
 - **Speaking:** Microsoft's multilingual neural voice through `edge-tts`. This voice is online, so
   the text of Focus's replies is sent to Microsoft's speech service. If that fails, Focus falls
   back to the offline Windows voice.
@@ -112,9 +115,37 @@ other time, and type `/voice off` to go back to text. Typing always works too.
 
 | Variable | Default | |
 |---|---|---|
-| `FOCUS_STT_MODEL` | best model in `data/models/` | a hub id or a local folder path |
+| `FOCUS_STT_MODEL` | best local model | a hub id or a local folder path |
+| `FOCUS_MODELS_DIR` | `%LOCALAPPDATA%\FocusAgent\models` | where Focus looks for Whisper models |
 | `FOCUS_TTS_VOICE` | `en-US-EmmaMultilingualNeural` | any `edge-tts --list-voices` name, e.g. `fr-FR-DeniseNeural` |
 | `FOCUS_TTS_RATE` | `+5%` | speaking speed |
+
+## Eval: the session check-in
+
+`evals/checkin.py` measures how well Focus handles the end-of-session check-in. Each of its 38
+cases recreates a moment in a student's day, with a fixed clock, a fake calendar and task list,
+and earlier sessions. Focus gets the real "session ended" event and scripted student replies, and
+the conversation is graded:
+
+- **By code:** no timer before the student chooses, the chosen session started with the right
+  length and task, the rating logged, the right task marked done, the calendar untouched, replies
+  short.
+- **By an LLM judge** (Sonnet 5.5, through your Claude account): asks how it went, gives a clear
+  next step, respects the case's key context (a class in 10 minutes, exhaustion, 1am before an
+  exam), supportive tone.
+
+```powershell
+python -m focus_agent.evals.checkin --review     # cases.md: read every input
+python -m focus_agent.evals.checkin --selftest   # grader sanity checks, no model calls
+python -m focus_agent.evals.checkin --reps 2     # full run (resumes where it stopped)
+python -m focus_agent.evals.checkin --variant v1 --reps 2   # after editing the prompt
+```
+
+**Baseline (Claude Sonnet 5, 38 cases × 2 reps): 68% ± 15% of check-ins pass every check.** The
+weak spots are upcoming calendar events (8%), because Focus rarely checks the calendar before
+suggesting the next block, and re-asking after the student has already chosen. Results are in
+`.claude/hillclimb/checkin/summary_baseline.md`. If the runner, cases or grader change, it refuses
+to run until you review them and pass `--approve-harness` once.
 
 ## Configuration (environment variables)
 
