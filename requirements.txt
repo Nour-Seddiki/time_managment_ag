@@ -1,0 +1,4 @@
+claude-agent-sdk>=0.2.163
+google-api-python-client
+google-auth-oauthlib
+google-auth-httplib2
