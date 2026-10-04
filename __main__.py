@@ -95,12 +95,13 @@ async def amain():
             print(f"! Voice unavailable: {type(e).__name__}: {e}")
             return
         voice = v
-        print("🎙 Voice on: Focus speaks and listens after each question. "
-              "Press Enter to talk, /voice off to stop.", flush=True)
+        detector = "Silero VAD" if v.vad is not None else "loudness"
+        print(f"🎙 Voice on ({detector}): Focus speaks and listens after each question (you'll hear a "
+              "short tone). Press Enter to talk, or to cut Focus off mid-sentence. /voice off to stop.", flush=True)
 
     async def listen() -> str | None:
-        print("🎙 listening...", flush=True)
-        heard = await asyncio.to_thread(voice.listen)
+        print("🎙 your turn...", flush=True)
+        heard = await asyncio.to_thread(voice.listen, on_speech=lambda: print("   (hearing you)", flush=True))
         if heard:
             print(f"you (voice)> {heard}", flush=True)
         return heard
@@ -118,8 +119,10 @@ async def amain():
             print(f"\nFocus: {reply}\n", flush=True)
             if not voice:
                 break
-            await asyncio.to_thread(voice.speak, reply)
-            if not asks_question(reply):
+            interrupted = await asyncio.to_thread(voice.speak, reply)
+            if interrupted and voice.interrupt_reason == "text":
+                break  # they started typing; the typed message is already queued
+            if not interrupted and not asks_question(reply):
                 break
             text = await listen()
             if not text:
@@ -127,18 +130,23 @@ async def amain():
                 break
         _prompt()
 
+    def read_stdin():
+        for line in sys.stdin:
+            line = line.strip().lstrip("﻿")  # PowerShell pipes add a BOM
+            if voice is not None and voice.speaking:  # typing while Focus talks cuts it off
+                voice.stop("text" if line else "enter")
+                if not line:
+                    continue  # Enter alone: the mic opens right after Focus stops
+            put(("user", line))
+        put(("user", "/quit"))  # stdin closed
+
+    threading.Thread(target=read_stdin, daemon=True).start()  # before the greeting, so it can be interrupted
+
     print(HELP)
     if config.VOICE:
         await set_voice(True)
     await say("[EVENT] App started. Greet the student, check today's calendar and open tasks, "
               "and ask what they'd like to work on first.")
-
-    def read_stdin():
-        for line in sys.stdin:
-            put(("user", line.strip().lstrip("﻿")))  # PowerShell pipes add a BOM
-        put(("user", "/quit"))  # stdin closed
-
-    threading.Thread(target=read_stdin, daemon=True).start()
 
     try:
         while True:

@@ -5,6 +5,7 @@ google-auth-httplib2
 # voice mode (optional)
 sounddevice
 edge-tts
+silero-vad  # install with --no-deps if torch is already set up (it only needs torch)
 transformers
 torch
 numpy

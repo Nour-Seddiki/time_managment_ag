@@ -96,8 +96,16 @@ Talk to Focus out loud, hands-free, like a call:
 .\focus_agent\run.ps1 -Voice      # or type /voice in the chat
 ```
 When a session ends, Focus speaks the check-in and opens the mic for your answer. It keeps the
-conversation going for as long as it's asking you questions. Press **Enter** to talk at any
-other time, and type `/voice off` to go back to text. Typing always works too.
+conversation going for as long as it's asking you questions. A short two-note tone means it's
+your turn. Press **Enter** to talk at any other time, or **while Focus is speaking** to cut it off
+and answer right away. Typing while it speaks also stops it and sends what you typed. Type
+`/voice off` to go back to text.
+
+- **Turn-taking:** Silero VAD, a small neural speech detector, decides when you start and stop
+  talking. Fans, traffic and keyboard noise don't open or hold the mic. If Silero isn't installed,
+  a loudness threshold is used instead.
+- **Fast replies:** speech is generated sentence by sentence, and the voice connection is warmed
+  up when voice mode starts. Focus starts talking about a second after its reply is ready.
 
 - **Listening:** OpenAI Whisper runs locally on your GPU, so your audio never leaves the machine.
   It handles English and French. Focus uses the best model it finds in
