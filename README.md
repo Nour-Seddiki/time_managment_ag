@@ -101,6 +101,17 @@ your turn. Press **Enter** to talk at any other time, or **while Focus is speaki
 and answer right away. Typing while it speaks also stops it and sends what you typed. Type
 `/voice off` to go back to text.
 
+- **"Hi Focus":** start Focus with `run.ps1 -Voice`. It loads quietly, plays a ready tone, and
+  waits. The first "Hi Focus" gets a greeting with what's coming up today; after that it answers
+  "Yes?" straight away. "Hi Focus, start 25 minutes on stats" does it in one go. The mic only
+  listens while Focus is open, nothing runs in the background after you close it, and everything
+  is transcribed locally. Turn the wake word off with `FOCUS_WAKE_WORD=0`; Focus then greets you as
+  soon as it starts.
+- **Ending:** say "bye" (or "goodbye", "that's all", "au revoir") to end the conversation, and Focus
+  goes back to waiting for "Hi Focus". Say "close Focus" to quit. Both are recognised instantly on
+  your laptop.
+- **Fast replies:** Focus speaks while Claude is still writing. The first sentence is synthesized
+  and played as soon as it's complete, so you hear the answer about as soon as it starts.
 - **Turn-taking:** Silero VAD, a small neural speech detector, decides when you start and stop
   talking. Fans, traffic and keyboard noise don't open or hold the mic. If Silero isn't installed,
   a loudness threshold is used instead.

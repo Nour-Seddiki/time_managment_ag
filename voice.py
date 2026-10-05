@@ -77,6 +77,7 @@ class Voice:
         self.speaking = False
         self.interrupt = threading.Event()
         self.interrupt_reason = None  # "enter" (talk now) or "text" (a typed message is coming)
+        self._asr_lock = threading.Lock()  # the wake-word thread and listen() share one Whisper
 
     # ---- setup ----------------------------------------------------------
 
@@ -133,7 +134,7 @@ class Voice:
 
     # ---- listening ------------------------------------------------------
 
-    def listen(self, wait_s: float = 8.0, silence_s: float = 1.0, max_s: float = 45.0, on_speech=None) -> str | None:
+    def listen(self, wait_s: float = 8.0, silence_s: float = 0.7, max_s: float = 45.0, on_speech=None) -> str | None:
         """Play the your-turn tone, wait up to wait_s for speech, record until silence, transcribe."""
         import sounddevice as sd
 
@@ -157,62 +158,27 @@ class Voice:
         return self.transcribe(ep.audio)
 
     def transcribe(self, audio: np.ndarray) -> str | None:
-        text = self.asr({"raw": audio, "sampling_rate": SAMPLE_RATE},
-                        generate_kwargs={"task": "transcribe"})["text"].strip()
+        with self._asr_lock:
+            text = self.asr({"raw": audio, "sampling_rate": SAMPLE_RATE},
+                            generate_kwargs={"task": "transcribe"})["text"].strip()
         return None if text.lower() in _PHANTOMS else text
 
     # ---- speaking -------------------------------------------------------
 
     def speak(self, text: str) -> bool:
         """Read text aloud, sentence by sentence. Returns True if it was interrupted."""
-        self.interrupt.clear()
-        self.interrupt_reason = None
-        sentences = split_sentences(speakable(text))
-        if not sentences:
-            return False
-        self.speaking = True
-        try:
-            return self._speak_edge(sentences)
-        finally:
-            self.speaking = False
+        speaker = self.stream()
+        speaker.feed(text)
+        return speaker.finish()
+
+    def stream(self) -> "StreamSpeaker":
+        """Start speaking text that is still being written: feed() chunks as they arrive, then finish()."""
+        return StreamSpeaker(self)
 
     def stop(self, reason: str = "enter"):
         """Cut Focus off (called from the keyboard thread)."""
         self.interrupt_reason = reason
         self.interrupt.set()
-
-    def _speak_edge(self, sentences: list[str]) -> bool:
-        """Synthesize the next sentence while the current one plays."""
-        import edge_tts
-
-        out: queue.Queue = queue.Queue()
-        tmp = Path(tempfile.gettempdir())
-
-        def produce():
-            for i, sentence in enumerate(sentences):
-                if self.interrupt.is_set():
-                    break
-                path = tmp / f"focus_tts_{os.getpid()}_{uuid.uuid4().hex[:6]}.mp3"
-                try:
-                    edge_tts.Communicate(sentence, config.TTS_VOICE, rate=config.TTS_RATE).save_sync(str(path))
-                except Exception:  # offline or service change: hand the rest to the Windows voice
-                    out.put((i, None))
-                    return
-                out.put((i, path))
-            out.put((len(sentences), None))
-
-        threading.Thread(target=produce, daemon=True, name="tts").start()
-        while True:
-            i, path = out.get()
-            if path is None:
-                return self._speak_sapi(sentences[i:]) if i < len(sentences) else False
-            try:
-                if _play_mp3(path, self.interrupt):
-                    return True
-            except Exception:  # playback failed: say this sentence and the rest offline
-                return self._speak_sapi(sentences[i:])
-            finally:
-                path.unlink(missing_ok=True)
 
     def _speak_sapi(self, sentences: list[str]) -> bool:
         import pythoncom
@@ -230,6 +196,184 @@ class Voice:
             return False
         finally:
             pythoncom.CoUninitialize()
+
+
+class StreamSpeaker:
+    """Speaks a reply while it is still being written, like a voice assistant.
+
+    feed() takes text chunks from the model stream; each complete sentence goes to a synthesis
+    thread (edge-tts), whose audio a playback thread plays in order. So the first sentence is heard
+    while later ones are still being generated and synthesized. finish() flushes the rest and waits
+    for playback; it returns True if Focus was interrupted (Enter or typing).
+    """
+
+    MIN_CHARS = 25  # tiny fragments ("Nice!") ride along with the next sentence
+    HEDGE_AFTER_S = 1.2  # Microsoft's TTS usually answers in ~0.8 s but sometimes stalls for seconds
+
+    def __init__(self, voice: "Voice"):
+        from concurrent.futures import ThreadPoolExecutor
+
+        self.v = voice
+        self.buf, self.pending = "", ""
+        self.lock = threading.Lock()
+        self.pool = ThreadPoolExecutor(max_workers=6, thread_name_prefix="tts")
+        self.audio: queue.Queue = queue.Queue()  # futures of ("mp3", path) / ("sapi", text), in speaking order
+        self.offline = False
+        self.interrupted = False
+        voice.interrupt.clear()
+        voice.interrupt_reason = None
+        voice.speaking = True
+        self.player = threading.Thread(target=self._play, daemon=True, name="tts-play")
+        self.player.start()
+
+    def feed(self, chunk: str):
+        with self.lock:
+            self.buf += chunk
+            *done, self.buf = re.split(r"(?<=[.!?…])\s+|\n{2,}", self.buf)
+            for sentence in done:
+                self._emit(sentence)
+
+    def _emit(self, sentence: str, final: bool = False):
+        text = f"{self.pending} {speakable(sentence)}".strip()
+        if len(text) < self.MIN_CHARS and not final:
+            self.pending = text
+            return
+        self.pending = ""
+        if text:  # start synthesizing right away, in parallel with earlier sentences
+            self.audio.put(self.pool.submit(self._synthesize, text))
+
+    def finish(self) -> bool:
+        with self.lock:
+            self._emit(self.buf, final=True)
+            self.buf = ""
+        self.audio.put(None)
+        self.player.join()
+        self.pool.shutdown(wait=False)
+        self.v.speaking = False
+        return self.interrupted or self.v.interrupt.is_set()
+
+    def _synthesize(self, sentence: str):
+        """One sentence to an mp3, hedged: if Microsoft hasn't answered within HEDGE_AFTER_S, a second
+        request races the first and the earlier answer wins. Falls back to the Windows voice."""
+        from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
+
+        import edge_tts
+
+        if self.offline or self.v.interrupt.is_set():
+            return ("sapi", sentence)
+
+        def request():
+            path = Path(tempfile.gettempdir()) / f"focus_tts_{os.getpid()}_{uuid.uuid4().hex[:6]}.mp3"
+            edge_tts.Communicate(sentence, config.TTS_VOICE, rate=config.TTS_RATE,
+                                 connect_timeout=5, receive_timeout=20).save_sync(str(path))
+            return path
+
+        racers = ThreadPoolExecutor(max_workers=2, thread_name_prefix="tts-hedge")
+        futures = [racers.submit(request)]
+        if not wait(futures, timeout=self.HEDGE_AFTER_S).done:
+            futures.append(racers.submit(request))
+        winner, pending = None, set(futures)
+        while pending and winner is None:
+            done, pending = wait(pending, return_when=FIRST_COMPLETED)
+            winner = next((f.result() for f in done if f.exception() is None), None)
+        for loser in pending:  # the slower request's file is deleted whenever it lands
+            loser.add_done_callback(lambda f: f.exception() is None and f.result().unlink(missing_ok=True))
+        racers.shutdown(wait=False)
+        if winner is None:  # both failed: offline or the service changed; the Windows voice takes over
+            self.offline = True
+            return ("sapi", sentence)
+        return ("mp3", winner)
+
+    def _play(self):
+        while (future := self.audio.get()) is not None:
+            kind, payload = future.result()
+            if self.v.interrupt.is_set():
+                if kind == "mp3":
+                    payload.unlink(missing_ok=True)
+                continue
+            try:
+                stopped = _play_mp3(payload, self.v.interrupt) if kind == "mp3" else self.v._speak_sapi([payload])
+            except Exception:  # playback failed: say it offline
+                stopped = self.v._speak_sapi([payload]) if kind == "mp3" else False
+            finally:
+                if kind == "mp3":
+                    payload.unlink(missing_ok=True)
+            self.interrupted |= bool(stopped)
+
+
+# Ending a conversation by voice, recognised locally (no round trip to Claude).
+BYE_RE = re.compile(r"^\W*(?:(?:ok(?:ay)?|thanks?|thank you|merci|alright)\W+)*"
+                    r"(?:bye|good\s*bye|bye\s*bye|see you|see ya|that'?s all|that is all|au revoir|à plus|a plus|ciao)\b", re.I)
+CLOSE_RE = re.compile(r"\b(?:close|quit|exit|shut\s*down|turn\s*off)\s+(?:the\s+)?focus\b", re.I)
+
+
+def goodbye_kind(text: str | None) -> str | None:
+    """"close" to quit Focus, "bye" to end the conversation, None otherwise (short utterances only)."""
+    if not text or len(text.split()) > 8:
+        return None
+    if CLOSE_RE.search(text):
+        return "close"
+    m = BYE_RE.match(text)
+    if not m or "?" in text or len(text[m.end():].split()) > 4:  # "bye, what's next?" isn't a goodbye
+        return None
+    return "bye"
+
+
+# "Hi Focus" / "Hey Focus, start 25 minutes..." / "Salut Focus": greeting + name at the start of a short
+# utterance, with spellings Whisper produces for the name. Everything after it is the request.
+WAKE_RE = re.compile(r"^\W*(?:hi|high|hai|hey|hay|hello|ok(?:ay)?|salut|bonjour|allo)\W*"
+                     r"(?:focus|fokus|focuss|phocus|focas|fogus|focust)\b\W*(.*)$", re.I | re.S)
+
+
+def match_wake(text: str | None) -> tuple[bool, str]:
+    """(woken, rest of the sentence) for a transcript."""
+    m = WAKE_RE.match(text or "")
+    return (True, m.group(1).strip()) if m else (False, "")
+
+
+class WakeListener:
+    """Listens for "Hi Focus" in the background with its own mic stream and speech detector.
+
+    Only short speech segments (<= max_s) are transcribed, locally, and nothing is stored. While
+    `busy` is set (Focus is speaking or already listening to you) the audio is ignored.
+    """
+
+    def __init__(self, transcribe, on_wake, max_s: float = 6.0):
+        from silero_vad import load_silero_vad
+
+        self.transcribe, self.on_wake, self.max_s = transcribe, on_wake, max_s
+        self.vad = load_silero_vad()  # separate instance: Silero keeps state per stream
+
+    def speech_prob(self, chunk: np.ndarray) -> float:
+        import torch
+
+        with torch.no_grad():
+            return float(self.vad(torch.from_numpy(np.ascontiguousarray(chunk, dtype=np.float32)), SAMPLE_RATE).item())
+
+    def run(self, stop: threading.Event, busy: threading.Event | None = None):
+        import sounddevice as sd
+
+        def fresh():
+            self.vad.reset_states()
+            return Endpointer(self.speech_prob, silence_s=0.6)
+
+        ep = fresh()
+        with sd.InputStream(samplerate=SAMPLE_RATE, channels=1, dtype="float32", blocksize=BLOCK) as stream:
+            while not stop.is_set():
+                block, _ = stream.read(BLOCK)
+                if busy is not None and busy.is_set():
+                    if ep.state != "waiting":
+                        ep = fresh()
+                    continue
+                state = ep.feed(block[:, 0])
+                if state == "speaking" and ep.duration_s > self.max_s:
+                    ep = fresh()  # a long stretch of talk isn't a wake phrase; skip it cheaply
+                elif state == "done":
+                    if 0.3 <= ep.speech_s <= self.max_s:
+                        woken, rest = match_wake(self.transcribe(ep.audio))
+                        if woken:
+                            self.on_wake(rest)
+                    ep = fresh()
 
 
 def speakable(text: str) -> str:

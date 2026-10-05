@@ -11,6 +11,7 @@ from claude_agent_sdk import (
     ClaudeAgentOptions,
     ClaudeSDKClient,
     ResultMessage,
+    StreamEvent,
     TextBlock,
     create_sdk_mcp_server,
     tool,
@@ -49,7 +50,9 @@ row, or when they report low energy). Size every suggestion to the "Coming up" n
 the event: a next block must end at least 5 minutes before the next event; with under 15 minutes \
 left, suggest a short break or getting ready for the event instead of a focus block; after 23:00, \
 recommend stopping for sleep, firmly when an exam or early class is next. Use the weekdays given \
-in the note rather than working them out.
+in the note rather than working them out. The note is current (next 18 hours of calendar, \
+deadlines, open tasks), so don't call tools just to re-check it; look further ahead only when the \
+student asks about later days.
 3. Their choice is the go-ahead. As soon as the student names a next step, even loosely ("break", \
 "keep going", "the essay for 45"), call start_session in that same reply. Fill gaps with defaults: \
 the suggested break length, 25 minutes of focus, the task they named or were on, shortened to fit \
@@ -111,6 +114,7 @@ class FocusAgent:
             model=config.MODEL,  # None = your account's default model
             effort=config.EFFORT,
             cwd=str(config.DATA_DIR),  # keeps these chats out of your coding-project history
+            include_partial_messages=True,  # stream text as it's written, so voice can start early
         )
         self.client = ClaudeSDKClient(self.options)
         self.last_turn: dict = {}
@@ -121,14 +125,30 @@ class FocusAgent:
     async def close(self):
         await self.client.disconnect()
 
-    async def send(self, text: str) -> str:
-        """Send a user/event message; Claude Code runs the tool loop. Returns Claude's text reply."""
+    async def send(self, text: str, on_text=None) -> str:
+        """Send a user/event message; Claude Code runs the tool loop. Returns Claude's text reply.
+
+        on_text(chunk), if given, receives the reply text as it is written (for live printing and
+        speaking); separate text blocks (before/after tool calls) are joined with a blank line.
+        """
         if "[EVENT]" in text[:20]:  # app events (session ended, startup) carry the schedule context
             text = f"{text}\n{await asyncio.to_thread(self.toolbox.schedule_context)}"
         await self.client.query(f"[{timeutil.stamp()}] {text}")
-        replies = []
+        replies, streamed = [], False
+        self._new_block = False  # a new text block started; separate it from the previous one
         self.last_turn = {"models": [], "error": None}  # read by evals; not used by the app
         async for msg in self.client.receive_response():
+            if isinstance(msg, StreamEvent):
+                event = msg.event
+                if on_text and event.get("type") == "content_block_delta" and event["delta"].get("type") == "text_delta":
+                    if streamed and event["delta"]["text"] and self._new_block:
+                        on_text("\n\n")
+                    self._new_block = False
+                    on_text(event["delta"]["text"])
+                    streamed = True
+                elif event.get("type") == "content_block_start" and event.get("content_block", {}).get("type") == "text":
+                    self._new_block = True
+                continue
             if isinstance(msg, AssistantMessage):
                 self.last_turn["models"].append(msg.model)
                 if msg.error:

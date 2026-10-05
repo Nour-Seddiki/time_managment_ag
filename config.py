@@ -30,6 +30,8 @@ STT_MODEL = os.environ.get("FOCUS_STT_MODEL") or next(
     (str(p) for p in _LOCAL_STT if (p / "model.safetensors").exists()), "openai/whisper-base")
 TTS_VOICE = os.environ.get("FOCUS_TTS_VOICE", "en-US-EmmaMultilingualNeural")  # speaks en and fr
 TTS_RATE = os.environ.get("FOCUS_TTS_RATE", "+5%")
+# In voice mode, say "Hi Focus" to start talking (instead of pressing Enter).
+WAKE_WORD = os.environ.get("FOCUS_WAKE_WORD", "1") == "1"
 
 DEFAULT_FOCUS_MINUTES = 25
 SHORT_BREAK_MINUTES = 5

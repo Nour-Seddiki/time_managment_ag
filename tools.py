@@ -203,9 +203,11 @@ class ToolBox:
                 lines.append("- Calendar: nothing in the next 18 hours")
         except CalendarNotConnected:
             lines.append("- Calendar: not connected")
-        due = [t for t in self.store.list_tasks("open") if t["due"]][:3]
-        for t in due:
+        open_tasks = self.store.list_tasks("open")
+        for t in [t for t in open_tasks if t["due"]][:3]:
             lines.append(f"- Due: {t['title']} ({when(timeutil.parse(t['due']))})")
+        undated = [t["title"] for t in open_tasks if not t["due"]][:3]
+        lines.append(f"- Open tasks: {len(open_tasks) or 'none'}" + (f" (no deadline: {', '.join(undated)})" if undated else ""))
         return "\n".join(lines)
 
     # ---- calendar ----
